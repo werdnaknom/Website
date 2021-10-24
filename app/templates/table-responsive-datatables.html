@@ -1,0 +1,105 @@
+<!---
+layout: default
+title: Datatables
+active: tables.responsive-datatables
+pluginsCss:
+  - datatables/extensions/responsive/responsive.bootstrap4.min.css
+pluginsJs:
+  - datatables/jquery.dataTables.min.js
+  - datatables/extensions/responsive/dataTables.responsive.min.js
+  - datatables/extensions/responsive/responsive.bootstrap4.min.js
+pageJs:
+  - pages/dataTables.bootstrap.js
+  - pages/datatables-responsive-demo.js
+--->
+
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/responsive/responsive.bootstrap4.min.css') }}">
+
+{% endblock %}
+
+{% block content %}
+
+
+<!-- .page -->
+<div class="page">
+    <!-- .page-inner -->
+    <div class="page-inner">
+        <!-- .page-title-bar -->
+        <header class="page-title-bar">
+            <!-- .breadcrumb -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active">
+                        <a href="#">
+                            <i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Tables
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+            <!-- /.breadcrumb -->
+
+            <!-- title -->
+            <h1 class="page-title">Responsive Datatables</h1>
+            <p class="text-muted">Resize your browser window to see it in action.</p>
+            <!-- /title -->
+        </header>
+        <!-- /.page-title-bar -->
+
+        <!-- .page-section -->
+        <div class="page-section">
+            <!-- .card -->
+            <div class="card card-fluid">
+                <!-- .card-body -->
+                <div class="card-body">
+                    <!-- .table -->
+                    <table id="dt-responsive" class="table dt-responsive nowrap w-100">
+                        <thead>
+                        <tr>
+                            <th>Bob</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>Extn.</th>
+                            <th>Start date</th>
+                            <th>Salary</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Bob</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>Extn.</th>
+                            <th>Start date</th>
+                            <th>Salary</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <!-- /.table -->
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.page-section -->
+    </div>
+    <!-- /.page-inner -->
+</div>
+<!-- /.page -->
+{% endblock %}
+
+{% block plugin_js %}
+<script src="{{ url_for('static', filename='assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/responsive/dataTables.responsive.min.js') }}"></script>
+<script src="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/responsive/responsive.bootstrap4.min.js') }}"></script>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='assets/javascript/pages/dataTables.bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/javascript/pages/datatables-responsive-demo.js') }}"></script>
+{% endblock %}

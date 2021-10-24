@@ -1,0 +1,47 @@
+<!-- .section-block -->
+<div class="section-block">
+  <!-- .metric-row -->
+  <div class="metric-row metric-flush">
+    <!-- metric column -->
+    <div class="col">
+      <!-- .metric -->
+      <a href="{{ url_for('product.product_pbas', product=product.descriptor) }}" class="metric metric-bordered align-items-center">
+        <h2 class="metric-label">PBAs</h2>
+        <p class="metric-value h3">
+          <sub><i class="oi oi-people"></i></sub>
+          <span class="value">{{ product.pbas | length }}</span>
+        </p>
+      </a>
+      <!-- /.metric -->
+    </div>
+    <!-- /metric column -->
+    <!-- metric column -->
+    <div class="col">
+      <!-- .metric -->
+      <a href="{{ url_for('product.product_reworks', product=product.descriptor) }}" class="metric metric-bordered align-items-center">
+        <h2 class="metric-label">Reworks</h2>
+        <p class="metric-value h3">
+          <sub><i class="oi oi-fork"></i></sub>
+          <span class="value">{{ product.reworks | length }}</span>
+        </p>
+      </a>
+      <!-- /.metric -->
+    </div>
+    <!-- /metric column -->
+    <!-- metric column -->
+    <div class="col">
+      <!-- .metric -->
+      <a href="{{ url_for('product.product_runids', product=product.descriptor) }}" class="metric metric-bordered align-items-center">
+        <h2 class="metric-label">Runids</h2>
+        <p class="metric-value h3">
+          <sub><i class="oi oi-timer fa-lg"></i></sub>
+          <span class="value">{{ product.runids | length }}</span>
+        </p>
+      </a>
+      <!-- /.metric -->
+    </div>
+    <!-- /metric column -->
+  </div>
+  <!-- /.metric-row -->
+</div>
+<!-- /.section-block -->

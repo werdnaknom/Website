@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- .page -->
+<div class="page">
+    <!-- .page-inner -->
+    <div class="page-inner">
+        <!-- .page-title-bar -->
+        <header class="page-title-bar">
+            <div class="d-flex flex-column flex-md-row">
+                <p class="lead">
+                    <span class="font-weight-bold">Hi!</span> <span
+                        class="d-block text-muted">Here’s what’s happening in the lab today.</span>
+                </p>
+                <div class="ml-auto">
+                    <!-- .dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-secondary" data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"><span>This Week</span> <i
+                                class="fa fa-fw fa-caret-down"></i></button>
+                        <div class="dropdown-arrow dropdown-arrow-right"></div>
+                        <!-- .dropdown-menu -->
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-md stop-propagation">
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input"
+                                       id="dpToday" name="dpFilter"
+                                       value="0"> <label
+                                    class="custom-control-label d-flex justify-content-between"
+                                    for="dpToday"><span>Today</span> <span
+                                    class="text-muted">Mar 27</span></label>
+                            </div><!-- /.custom-control -->
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input"
+                                       id="dpYesterday"
+                                       name="dpFilter" value="1"> <label
+                                    class="custom-control-label d-flex justify-content-between"
+                                    for="dpYesterday"><span>Yesterday</span>
+                                <span
+                                        class="text-muted">Mar 26</span></label>
+                            </div><!-- /.custom-control -->
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input"
+                                       id="dpWeek" name="dpFilter"
+                                       value="2" checked> <label
+                                    class="custom-control-label d-flex justify-content-between"
+                                    for="dpWeek"><span>This Week</span> <span
+                                    class="text-muted">Mar 21-27</span></label>
+                            </div><!-- /.custom-control -->
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input"
+                                       id="dpMonth" name="dpFilter"
+                                       value="3"> <label
+                                    class="custom-control-label d-flex justify-content-between"
+                                    for="dpMonth"><span>This Month</span> <span
+                                    class="text-muted">Mar 1-31</span></label>
+                            </div><!-- /.custom-control -->
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input"
+                                       id="dpYear" name="dpFilter"
+                                       value="4"> <label
+                                    class="custom-control-label d-flex justify-content-between"
+                                    for="dpYear"><span>This Year</span> <span
+                                    class="text-muted">2018</span></label>
+                            </div><!-- /.custom-control -->
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input"
+                                       id="dpCustom" name="dpFilter"
+                                       value="5"> <label
+                                    class="custom-control-label"
+                                    for="dpCustom">Custom</label>
+                                <div class="custom-control-hint my-1">
+                                    <!-- datepicker:range -->
+                                    <input type="text" class="form-control"
+                                           data-toggle="flatpickr"
+                                           data-mode="range"
+                                           data-disable-mobile="true"
+                                           data-date-format="Y-m-d">
+                                    <!-- /datepicker:range -->
+                                </div>
+                            </div><!-- /.custom-control -->
+                        </div><!-- /.dropdown-menu -->
+                    </div><!-- /.dropdown -->
+                </div>
+            </div>
+        </header><!-- /.page-title-bar -->
+        <!-- .page-section -->
+        <div class="page-section">
+            <!-- .section-block -->
+            <div class="section-block">
+                <!-- metric row -->
+                <div class="metric-row">
+                    <div class="col-lg-9">
+                        <div class="metric-row metric-flush">
+                            <!-- metric column -->
+                            <div class="col">
+                                <!-- .metric -->
+                                <a href="user-teams.html"
+                                   class="metric metric-bordered align-items-center">
+                                    <h2 class="metric-label"> Products </h2>
+                                    <p class="metric-value h3">
+                                        <sub><i class="oi oi-people"></i></sub>
+                                        <span class="value">6</span>
+                                    </p>
+                                </a> <!-- /.metric -->
+                            </div><!-- /metric column -->
+                            <!-- metric column -->
+                            <div class="col">
+                                <!-- .metric -->
+                                <a href="user-projects.html"
+                                   class="metric metric-bordered align-items-center">
+                                    <h2 class="metric-label"> Projects </h2>
+                                    <p class="metric-value h3">
+                                        <sub><i class="oi oi-fork"></i></sub>
+                                        <span class="value">12</span>
+                                    </p>
+                                </a> <!-- /.metric -->
+                            </div><!-- /metric column -->
+                            <!-- metric column -->
+                            <div class="col">
+                                <!-- .metric -->
+                                <a href="user-tasks.html"
+                                   class="metric metric-bordered align-items-center">
+                                    <h2 class="metric-label"> Active Tasks </h2>
+                                    <p class="metric-value h3">
+                                        <sub><i class="fa fa-tasks"></i></sub>
+                                        <span class="value">64</span>
+                                    </p>
+                                </a> <!-- /.metric -->
+                            </div><!-- /metric column -->
+                        </div>
+                    </div><!-- metric column -->
+                    <div class="col-lg-3">
+                        <!-- .metric -->
+                        <a href="user-tasks.html"
+                           class="metric metric-bordered">
+                            <div class="metric-badge">
+                                        <span class="badge badge-lg badge-success"><span
+                                                class="oi oi-media-record pulse mr-1"></span> ONGOING TASKS</span>
+                            </div>
+                            <p class="metric-value h3">
+                                <sub><i class="oi oi-timer"></i></sub> <span
+                                    class="value">8</span>
+                            </p>
+                        </a> <!-- /.metric -->
+                    </div><!-- /metric column -->
+                </div><!-- /metric row -->
+            </div><!-- /.section-block -->
+            <!-- grid row -->
+            <div class="row">
+                <!-- grid column -->
+                <div class="col-12 col-lg-12 col-xl-4">
+                    <!-- .card -->
+                    <div class="card card-fluid">
+                        <!-- .card-body -->
+                        <div class="card-body">
+                            <h3 class="card-title mb-4"> Completion Tasks </h3>
+                            <div class="chartjs" style="height: 292px">
+                                <canvas id="completion-tasks"></canvas>
+                            </div>
+                        </div><!-- /.card-body -->
+                    </div><!-- /.card -->
+                </div><!-- /grid column -->
+                <!-- grid column -->
+                <div class="col-12 col-lg-6 col-xl-4">
+                    <!-- .card -->
+                    <div class="card card-fluid">
+                        <!-- .card-body -->
+                        <div class="card-body">
+                            <h3 class="card-title"> Tasks Performance </h3>
+                            <!-- easy-pie-chart -->
+                            <div class="text-center pt-3">
+                                <div class="chart-inline-group"
+                                     style="height:214px">
+                                    <div class="easypiechart"
+                                         data-toggle="easypiechart"
+                                         data-percent="60"
+                                         data-size="214"
+                                         data-bar-color="#346CB0"
+                                         data-track-color="false"
+                                         data-scale-color="false"
+                                         data-rotate="225"></div>
+                                    <div class="easypiechart"
+                                         data-toggle="easypiechart"
+                                         data-percent="50"
+                                         data-size="174"
+                                         data-bar-color="#00A28A"
+                                         data-track-color="false"
+                                         data-scale-color="false"
+                                         data-rotate="225"></div>
+                                    <div class="easypiechart"
+                                         data-toggle="easypiechart"
+                                         data-percent="75"
+                                         data-size="134"
+                                         data-bar-color="#5F4B8B"
+                                         data-track-color="false"
+                                         data-scale-color="false"
+                                         data-rotate="225"></div>
+                                </div>
+                            </div><!-- /easy-pie-chart -->
+                        </div><!-- /.card-body -->
+                        <!-- .card-footer -->
+                        <div class="card-footer">
+                            <div class="card-footer-item">
+                                <i class="fa fa-fw fa-circle text-indigo"></i>
+                                100%
+                                <div class="text-muted small"> Assigned</div>
+                            </div>
+                            <div class="card-footer-item">
+                                <i class="fa fa-fw fa-circle text-purple"></i>
+                                75%
+                                <div class="text-muted small"> Completed</div>
+                            </div>
+                            <div class="card-footer-item">
+                                <i class="fa fa-fw fa-circle text-teal"></i> 60%
+                                <div class="text-muted small"> Active</div>
+                            </div>
+                        </div><!-- /.card-footer -->
+                    </div><!-- /.card -->
+                </div><!-- /grid column -->
+                <!-- grid column -->
+                <div class="col-12 col-lg-6 col-xl-4">
+                    <!-- .card -->
+                    <div class="card card-fluid">
+                        <!-- .card-body -->
+                        <div class="card-body pb-0">
+                        </div><!-- /.list-group -->
+                    </div><!-- /.card -->
+                </div><!-- /grid column -->
+            </div><!-- /grid row -->
+            <!-- section-deck -->
+            <div class="section-deck">
+                <!-- .card -->
+                <div class="card card-fluid pb-3">
+                    <div class="card-header"> Active Projects</div>
+                    <!-- .lits-group -->
+                    <div class="lits-group list-group-flush">
+                        <!-- .lits-group-item -->
+                        <div class="list-group-item">
+                            <!-- .lits-group-item-figure -->
+                            <div class="list-group-item-figure">
+                                <div class="has-badge">
+                                    <a href="page-project.html"
+                                       class="tile tile-md bg-purple">MH</a> <a
+                                        href="#team"
+                                        class="user-avatar user-avatar-xs"><img
+                                        src="assets/images/avatars/team4.jpg"
+                                        alt=""></a>
+                                </div>
+                            </div><!-- .lits-group-item-figure -->
+                            <!-- .lits-group-item-body -->
+                            <div class="list-group-item-body">
+                                <h5 class="card-title">
+                                    <a href="page-project.html">Mentor
+                                        Harbor </a>
+                                </h5>
+                                <p class="card-subtitle text-muted mb-1">
+                                    Progress in 74% - Last update 1d </p>
+                                <!-- .progress -->
+                                <div class="progress progress-xs bg-transparent">
+                                    <div class="progress-bar bg-purple"
+                                         role="progressbar" aria-valuenow="2181"
+                                         aria-valuemin="0" aria-valuemax="100"
+                                         style="width: 74%">
+                                        <span class="sr-only">74% Complete</span>
+                                    </div>
+                                </div><!-- /.progress -->
+                            </div><!-- .lits-group-item-body -->
+                        </div><!-- /.lits-group-item -->
+                        <!-- .lits-group-item -->
+                        <div class="list-group-item">
+                            <!-- .lits-group-item-figure -->
+                            <div class="list-group-item-figure">
+                                <div class="has-badge">
+                                    <a href="page-project.html"
+                                       class="tile tile-md bg-indigo">IR</a> <a
+                                        href="#team"
+                                        class="user-avatar user-avatar-xs"><img
+                                        src="assets/images/avatars/team1.jpg"
+                                        alt=""></a>
+                                </div>
+                            </div><!-- .lits-group-item-figure -->
+                            <!-- .lits-group-item-body -->
+                            <div class="list-group-item-body">
+                                <h5 class="card-title">
+                                    <a href="page-project.html">Island
+                                        Rapids</a>
+                                </h5>
+                                <p class="card-subtitle text-muted mb-1">
+                                    Progress in 22% - Last update 2h </p>
+                                <!-- .progress -->
+                                <div class="progress progress-xs bg-transparent">
+                                    <div class="progress-bar bg-indigo"
+                                         role="progressbar" aria-valuenow="867"
+                                         aria-valuemin="0" aria-valuemax="100"
+                                         style="width: 22%">
+                                        <span class="sr-only">22% Complete</span>
+                                    </div>
+                                </div><!-- /.progress -->
+                            </div><!-- .lits-group-item-body -->
+                        </div><!-- /.lits-group-item -->
+                        <!-- .lits-group-item -->
+                    </div><!-- /.lits-group -->
+                </div><!-- /.card -->
+                <!-- .card -->
+                <div class="card card-fluid">
+                    <div class="card-header"> Active Tasks: To-Dos</div>
+                    <!-- .card-body -->
+                    <div class="card-body">
+                        <!-- .todo-list -->
+                        <div class="todo-list">
+                            <!-- .todo-header -->
+                            <div class="todo-header"> Optics Qualifications
+                            </div><!-- /.todo-header -->
+                            <!-- .todo -->
+                            <div class="todo">
+                                <!-- .custom-control -->
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox"
+                                           class="custom-control-input"
+                                           id="todo1"> <label
+                                        class="custom-control-label"
+                                        for="todo1">Finisar 10G-SR</label>
+                                </div><!-- /.custom-control -->
+                            </div><!-- /.todo -->
+                            <!-- .todo -->
+                            <div class="todo">
+                                <!-- .custom-control -->
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox"
+                                           class="custom-control-input"
+                                           id="todo2" checked>
+                                    <label class="custom-control-label"
+                                           for="todo2">Finisar 10G-LR
+                                    </label>
+                                </div><!-- /.custom-control -->
+                            </div><!-- /.todo -->
+                        </div><!-- /.todo-list -->
+                    </div><!-- /.card-body -->
+                    <!-- .card-footer -->
+                    <div class="card-footer">
+                        <a href="#" class="card-footer-item">View all <i
+                                class="fa fa-fw fa-angle-right"></i></a>
+                    </div><!-- /.card-footer -->
+                </div><!-- /.card -->
+            </div><!-- /section-deck -->
+        </div><!-- /.page-section -->
+    </div><!-- /.page-inner -->
+</div><!-- /.page -->
+{% endblock %}

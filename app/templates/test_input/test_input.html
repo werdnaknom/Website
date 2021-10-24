@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<br>
+<a href={{url_for('post.download_example_user_input')}} class="btn btn-info"
+   role="button">Download Example User Input File</a>
+<br>
+<br>
+<br>
+<form method="POST" enctype="multipart/form-data">
+    {{form.csrf_token}}
+    {{ form.test_selector.label }} {{ form.test_selector}}
+    <br>
+    <br>
+    {{ form.csv_file.label}} {{form.csv_file( size=20 ) }}
+    <br>
+    <br>
+    {{ form.user_input_file.label}} {{form.user_input_file( size=20 ) }}
+    <br>
+    <br>
+    {{form.filter_by.label }} {{ form.filter_by }}
+    <br>
+    <input type="submit" value="Go">
+</form>
+<div id="progress"></div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    function start_long_task() {
+        // add task status elements
+        div = $('<div class="progress"><div></div><div>0%</div><div>...</div><div>&nbsp;</div></div><hr>');
+        $('#progress').append(div);
+
+        // create a progress bar
+        var nanobar = new Nanobar({
+            bg: '#44f',
+            target: div[0].childNodes[0]
+        });
+
+        function update_progress(status_url, nanobar, status_div) {
+            // send GET request to status URL
+            $.getJSON(status_url, function(data) {
+                // update UI
+                percent = parseInt(data['current'] * 100 / data['total']);
+                nanobar.go(percent);
+                $(status_div.childNodes[1]).text(percent + '%');
+                $(status_div.childNodes[2]).text(data['status']);
+                if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
+                    if ('result' in data) {
+                        // show result
+                        $(status_div.childNodes[3]).text('Result: ' + data['result']);
+                    }
+                    else {
+                        // something unexpected happened
+                        $(status_div.childNodes[3]).text('Result: ' + data['state']);
+                    }
+                }
+                else {
+                    // rerun in 2 seconds
+                    setTimeout(function() {
+                        update_progress(status_url, nanobar, status_div);
+                    }, 2000);
+                }
+            });
+        }
+        $(function() {
+            $('#start-bg-job').click(start_long_task);
+        });
+
+
+
+
+</script>
+
+
+{% endblock content %}

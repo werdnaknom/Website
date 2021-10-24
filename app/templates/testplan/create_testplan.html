@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block plugin_js %}
+
+{% endblock %}
+{% block content %}
+
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+<!-- .page -->
+<div class="page has-sidebar has-sidebar-expand-xl">
+    <!-- .page-inner -->
+    <div class="page-inner">
+        <!-- .page-title-bar -->
+        <header class="page-title-bar">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active">
+                        <a href="{{ url_for('main.index') }}">
+                            <i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Dashboard
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+            <h1 class="page-title">{{ title }}</h1>
+        </header>
+        <!-- /.page-title-bar -->
+        <!-- .section-block -->
+        <form method="post">
+            <div class="section-block">
+                <!-- #accordion -->
+
+                <div id="accordion" class="card-expansion">
+
+                    <!-- .card -->
+
+                    <!-- .page-section -->
+                    <div class="page-section">
+                        {% include 'testplan/product_form.html' %}
+                    </div>
+                    <!-- /.page-section -->
+                    <!-- .page-section -->
+                    <div class="page-section">
+                        {% include 'testplan/media_form.html' %}
+                    </div>
+                    <!-- /.page-section -->
+                    <!-- .page-section -->
+                    <div class="page-section">
+                        {% include 'testplan/temperature_form.html' %}
+                    </div>
+                    <!-- /.page-section -->
+                    <!-- .page-section -->
+                    <div class="page-section">
+                        {% include 'testplan/power_form.html' %}
+                    </div>
+                    <!-- /.page-section -->
+                    <!-- .page-section -->
+                    <div class="page-section">
+                        {% include 'testplan/testpoint_form.html' %}
+                    </div>
+                    <!-- /.page-section -->
+
+                </div>
+
+
+            </div>
+            <!-- /.page-inner -->
+            <div class="section-block">
+                {{ form.csrf_token }}
+                {{ form.submit(class='btn btn-primary') }}
+            </div>
+        </form>
+
+    </div>
+
+    <!-- /.page -->
+</div>
+
+
+{% endblock %}

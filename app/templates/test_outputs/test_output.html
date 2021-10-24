@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        .progress {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+<h1>{{page.header}}</h1>
+<h2>{{page.processingHeader}}</h2>
+<div id="progress"></div>
+
+
+<form id="download" action="{{page.redirect_url}}" method="POST">
+	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+</script>
+<script>
+        var status_urls = {{page.task_urls|safe}};
+
+        for (i=0; i< status_urls.length; i++){
+            post_processing(status_urls[i])
+        }
+
+        function post_processing(task_status_url) {
+            // add task status elements
+            div = $('<div class="progress"><div></div><div>0%</div><div>...</div><div>&nbsp;</div></div><hr>');
+            $('#progress').append(div);
+            console.log(task_status_url)
+
+            // create a progress bar
+            var nanobar = new Nanobar({
+                bg: '#44f',
+                target: div[0].childNodes[0]
+            });
+
+            update_progress(task_status_url, nanobar, div[0]);
+
+        }
+        function update_progress(status_url, nanobar, status_div) {
+            // send GET request to status URL
+            console.log("Update Progress Log");
+            console.log("status_url");
+            $.getJSON(status_url, function(data) {
+                // update UI
+                percent = parseInt(data['current'] * 100 / data['total']);
+                nanobar.go(percent);
+                $(status_div.childNodes[1]).text(percent + '%');
+                $(status_div.childNodes[2]).text(data['status']);
+                console.log(data['state'])
+                if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
+                    if ('result' in data) {
+                        // show result
+                        console.log("Results Gathered");
+
+                        var resultdata = JSON.stringify(data['result'])
+                        var filename = data['filename']
+
+                        $form = $('#download');
+                        $form.append( function(eventObj) {
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "data")
+                                .attr("value", resultdata)
+                                .appendTo("#download");
+                            return ;
+                        });
+                        $form.append( function(eventObj) {
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "filename")
+                                .attr("value", filename)
+                                .appendTo("#download");
+                            return ;
+                        });
+                        $form.submit()
+                    }
+                    else {
+                        // something unexpected happened
+                        $(status_div.childNodes[3]).text('Result: ' + data['state']);
+                    }
+                }
+                else {
+                    // rerun in 2 seconds
+                    setTimeout(function() {
+                        update_progress(status_url, nanobar, status_div);
+                    }, 2000);
+                }
+            });
+        }
+
+
+
+
+
+</script>
+
+{% endblock content %}

@@ -1,0 +1,99 @@
+<div class="card card-expansion-item">
+    <div class="card-header border-0" id="headingFive">
+        <button class="btn btn-reset collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false"
+                aria-controls="collapseFive" type="button">
+            <span class="collapse-indicator mr-2"><i class="fa fa-fw fa-caret-right"></i></span>
+            <span>Test Point Selection</span>
+        </button>
+    </div>
+    <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+        <div class="card-body pt-0">
+            <fieldset>
+                <div class="table dt-responsive nowrap w-100">
+                    <table class="no_error" id="test_points_table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Test Point</th>
+                            <th scope="col">Voltage Rail?</th>
+                            <th scope="col">Edge Rail?</th>
+                            <th scope="col">Auto Scale?</th>
+                            <th scope="col">Expected Value</th>
+                            <th scope="col">Vertical Offset</th>
+                            <th scope="col">Vertical Range</th>
+                            <th scope="col">
+                                <button class="btn" type="button" id="add_testpoint"><i style="color:green"
+                                                                                        class="fas fa-plus-circle fa-2x"></i>
+                                </button>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for testpoint in form.test_points %}
+                        <tr id="testpoint_{{loop.index}}">
+                            <th scope="row">{{loop.index}}</th>
+                            {% for field in testpoint %}
+                            {% if field.type == "CSRFTokenField" %}
+                            {{ field }}
+                            {% elif field.type == "BooleanField" %}
+                            <td>
+                                {{ field }}
+                            </td>
+                            {% else %}
+                            <td>
+                                {{ field(class_='form-control') }}
+                            </td>
+                            {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.form-group -->
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+
+
+{% block page_js %}
+
+<script type="text/javascript">
+$(document).ready(function ()   {
+    $('#add_testpoint').click(function () {
+        cloneTestPoint('div.table:last', 'testpoint');
+    });
+});
+function cloneTestPoint(selector, type) {
+    var testpoint_table = document.getElementById("test_points_table");
+    var table_len = testpoint_table.rows.length;
+    var row = document.getElementById("testpoint_1");
+    var rowClone = row.cloneNode(true);
+    rowClone.id = "testpoint_" + table_len
+
+    $(rowClone).find(':input').each(function() {
+        var name = $(this).attr('name').replace('-0-','-' + (table_len-1) + '-');
+        var id = name;
+        console.log(name)
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    });
+    $(rowClone).find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-0-','-' + (table_len-1) + '-');
+        console.log(newFor)
+        $(this).attr('for', newFor);
+    });
+    $(rowClone).find('th').each(function() {
+        this.innerHTML=table_len;
+    });
+
+    testpoint_table.appendChild(rowClone)
+}
+
+
+
+
+</script>
+{% endblock %}

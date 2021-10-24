@@ -1,0 +1,29 @@
+{% for test in product.tests_unique %}
+
+<h1>{{ test }} </h1><h2><a href="{{url_for('.testdata', test=test, product=product.descriptor)}}"> View Results</a></h2>
+
+{% set metrics = product.get_test_metrics(test) %}
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        {% for header in metrics[0].keys() %}
+        <th scope="col">{{header}}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in metrics %}
+    <tr>
+        <th scope="row">{{loop.index}}</th>
+        {% for value in row.values() %}
+        <td>{{value}}</td>
+        {% endfor %}
+        <td><a href="{{url_for('.testdata', test=test, product=product.descriptor)}}">View Data </a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endfor %}

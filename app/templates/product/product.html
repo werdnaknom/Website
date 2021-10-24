@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+
+<!--
+layout: default
+title: Bootstrap Team Overview
+active: pages.team.team-overview
+footer: false
+pluginsCss:
+- flatpickr/flatpickr.min.css
+pluginsJs:
+- flatpickr/flatpickr.min.js
+- chart.js/Chart.min.js
+pageJs:
+- pages/team-overview-demo.js
+-->
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/flatpickr/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<!-- .page -->
+<div class="page has-sidebar has-sidebar-expand-xl">
+    <!-- .page-inner -->
+    <div class="page-inner">
+        <!-- .page-title-bar -->
+        <header class="page-title-bar">
+            <!-- .d-flex -->
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- .breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active">
+                            <a href="{{ url_for('product.products') }}">
+                                <i class="breadcrumb-icon fa fa-angle-left mr-2"></i>Products
+                            </a>
+                        </li>
+                    </ol>
+                </nav>
+                <!-- /.breadcrumb -->
+
+                <button type="button" class="btn btn-light btn-icon d-xl-none" data-toggle="sidebar"><i
+                        class="fa fa-angle-double-left"></i></button>
+            </div>
+            <!-- /.d-flex -->
+
+            <!-- grid row -->
+            <div class="row text-center text-sm-left">
+                <!-- grid column -->
+                <div class="col-sm-auto col-12 mb-2">
+                    <!-- .has-badge -->
+                    <div class="has-badge has-badge-bottom">
+                        <a href="#" class="user-avatar user-avatar-xl">
+                            <img src="{{ url_for('static', filename='assets/images/products/nic.png') }}" alt="">
+                        </a>
+                        <span class="tile tile-circle tile-xs" data-toggle="tooltip" title="Public"><i
+                                class="fas fa-globe"></i></span>
+                    </div>
+                    <!-- /.has-badge -->
+                </div>
+                <!-- /grid column -->
+                <!-- grid column -->
+                <div class="col">
+                    <h1 class="page-title">{{ title }}</h1>
+                    <p class="text-muted"> This is a description! </p>
+                </div>
+                <!-- /grid column -->
+            </div>
+            <!-- /grid row -->
+
+            <!-- .nav-scroller -->
+            <div class="nav-scroller border-bottom">
+                <!-- .nav-tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active show" data-toggle="tab" href="#product-overview">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#product-pbas">PBAs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#product-reworks">Reworks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#product-tests">Tests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#product-data">Test Data</a>
+                    </li>
+                </ul>
+                <!-- /.nav-tabs -->
+            </div>
+            <!-- /.nav-scroller -->
+        </header>
+        <!-- /.page-title-bar -->
+
+        <!-- .tab-content -->
+        <div class="tab-content pt-4" id="clientDetailsTabs">
+            <!-- .tab-pane -->
+            <div class="tab-pane fade show active" id="product-overview" role="tabpanel"
+                 aria-labelledby="product-overview-tab">
+                {% include 'product/product-overview.html' %}
+
+            </div>
+            <!-- /.tab-pane -->
+
+            <!-- .tab-pane -->
+            <div class="tab-pane fade" id="product-pbas" role="tabpanel" aria-labelledby="product-pbas-tab">
+                {% include 'product/product-pbas.html' %}
+
+            </div>
+            <!-- /.tab-pane -->
+
+            <!-- .tab-pane -->
+            <div class="tab-pane fade" id="product-reworks" role="tabpanel" aria-labelledby="product-reworks-tab">
+                {% include 'product/product-reworks.html' %}
+
+            </div>
+            <!-- /.tab-pane -->
+
+            <!-- .tab-pane -->
+            <div class="tab-pane fade" id="product-tests" role="tabpanel" aria-labelledby="product-tests-tab">
+                {% include 'product/product-tests.html' %}
+
+            </div>
+            <!-- /.tab-pane -->
+
+            <!-- .tab-pane -->
+            <div class="tab-pane fade" id="product-data" role="tabpanel" aria-labelledby="product-data-tab">
+                <!-- {#{% include 'product/product-data.html' %} #} -->
+
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+
+
+        <!-- .page-sidebar -->
+        <div class="page-sidebar">
+            <!-- .sidebar-header -->
+            <header class="sidebar-header d-sm-none">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active">
+                            <a href="#" onclick="Looper.toggleSidebar()"><i
+                                    class="breadcrumb-icon fa fa-angle-left mr-2"></i>Back</a>
+                        </li>
+                    </ol>
+                </nav>
+            </header>
+            <!-- /.sidebar-header -->
+
+            <!-- .sidebar-section-fill -->
+            <div class="sidebar-section-fill">
+                <!-- .card -->
+                <div class="card card-reflow">
+
+
+                    <!-- .card-body -->
+                    <div class="card-body border-top">
+                        <div class="d-flex justify-content-between my-3">
+                            <h4 class="card-title">Recent activity</h4>
+                            <a href="#">View all</a>
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.sidebar-section-fill -->
+        </div>
+        <!-- /.page-sidebar -->
+    </div>
+    <!-- /.page -->
+</div>
+
+{% endblock %}
+
+
+{% block plugin_js %}
+<script src="{{ url_for('static', filename='assets/vendor/flatpickr/flatpickr.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/chart.js/Chart.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/dataTables.buttons.min.js') }}"></script>
+<script src="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.html5.min.js') }}"></script>
+<script src="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.print.min.js') }}"></script>
+
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='assets/javascript/pages/team-overview-demo.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/javascript/pages/dataTables.bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/javascript/pages/datatables-filters-demo.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,89 @@
+<div class="card card-expansion-item">
+    <div class="card-header border-0" id="headingTwo">
+        <button class="btn btn-reset collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                aria-controls="collapseTwo" type="button">
+            <span class="collapse-indicator mr-2"><i class="fa fa-fw fa-caret-right"></i></span>
+            <span>Temperature Selection</span>
+        </button>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body pt-0">
+            <fieldset>
+                {% for field in form.thermal %}
+                {% if field.type == 'CSRFTokenField' %}
+                {{ field }}
+                {% elif field.type == "FieldList" %}
+                <div class="table dt-responsive nowrap w-100">
+                    <table class="no_error" id="temperatures_table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Order</th>
+                            <th scope="col">Temperature</th>
+                            <th scope="col">
+                                <button class="btn" type="button" id="add_temperature">
+                                    <i style="color:green" class="fas fa-plus-circle fa-2x"></i>
+                                </button>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for temp in field %}
+                        <tr id="temp_{{loop.index}}">
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{temp(class_='form-control')}}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% else %}
+                <label>{{ field.label }}</label>
+                {{ field(class_='form-control') }}
+                {% endif %}
+                {% endfor %}
+
+
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+
+{% block page_js %}
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#add_temperature').click(function () {
+        cloneTemp('div.table:last', 'temp');
+    });
+});
+function cloneTemp(selector, type) {
+    var temp_table = document.getElementById("temperatures_table");
+    var table_len = temp_table.rows.length;
+    var row = document.getElementById("temp_1");
+    var rowClone = row.cloneNode(true);
+    rowClone.id = "temp_" + table_len
+
+    $(rowClone).find(':input').each(function() {
+        var name = $(this).attr('name').replace('-0-','-' + (table_len-1) + '-');
+        var id = name;
+        //console.log(name)
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    });
+    $(rowClone).find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-0-','-' + (table_len-1) + '-');
+        //console.log(newFor)
+        $(this).attr('for', newFor);
+    });
+    $(rowClone).find('th').each(function() {
+        this.innerHTML=table_len;
+    });
+
+    temp_table.appendChild(rowClone)
+}
+
+
+</script>
+{% endblock %}

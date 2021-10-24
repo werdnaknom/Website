@@ -1,0 +1,39 @@
+<!-- .list-group -->
+<div class="list-group list-group-flush list-group-divider">
+  {% set update_time = product_update_times() %}
+  {% for product in product_names() %}
+  <!-- .list-group-item -->
+  <div class="list-group-item">
+    <div class="list-group-item-figure">
+      <a href="page-team.html" class="user-avatar user-avatar-md">
+        <img src="assets/images/avatars/unknown" alt="">
+      </a>
+    </div>
+    <div class="list-group-item-body">
+      <div class="d-sm-flex justify-content-sm-between align-items-sm-center">
+        <div class="team">
+          <h4 class="list-group-item-title">
+            <a href="{{ url_for('product.product', product=product) }}">{{product}}</a>
+            <a href="{{ url_for('product.product', product=product) }}" class="mention ml-1">Comment Here</a>
+          </h4>
+          <p class="list-group-item-text">{{update_time[ product ]}}</p>
+        </div>
+        <ul class="list-inline text-muted mb-0">
+          <li class="list-inline-item mr-3" data-toggle="tooltip" title="PBAs" data-placement="bottom">
+            <i class="fas fa-users text-teal"></i> 12</li>
+          <li class="list-inline-item mr-3" data-toggle="tooltip" title="Reworks" data-placement="bottom">
+            <i class="fas fa-user-tie text-pink"></i> 30</li>
+          <li class="list-inline-item mr-3" data-toggle="tooltip" title="Runids" data-placement="bottom">
+            <i class="fa fa-bookmark text-yellow"></i> 30</li>
+          <li class="list-inline-item" data-toggle="tooltip" title="Public"><i class="fa fa-globe"></i></li>
+        </ul>
+      </div>
+    </div>
+    <div class="list-group-item-figure">
+      <a href="#" class="btn btn-sm btn-icon btn-secondary stop-propagation"><i class="fas fa-ellipsis-h"></i></a>
+    </div>
+  </div>
+  <!-- /.list-group-item -->
+  {% endfor %}
+</div>
+<!-- /.list-group -->

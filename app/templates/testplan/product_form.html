@@ -1,0 +1,26 @@
+<div class="card card-expansion-item expanded">
+    <div class="card-header border-0" id="headingOne">
+        <button class="btn btn-reset" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                aria-controls="collapseOne" type="button">
+            <span class="collapse-indicator mr-2"><i class="fa fa-fw fa-caret-right"></i></span>
+            <span>Product Information</span>
+        </button>
+    </div>
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body pt-0">
+            <fieldset>
+                <div class="form-group">
+                    {% for field in form.product %}
+                    {% if field.type == 'CSRFTokenField' %}
+                    {{ field }}
+                    {% else %}
+                    <label>{{ field.label }}</label>
+                    {{ field(class_='form-control') }}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <!-- /.form-group -->
+            </fieldset>
+        </div>
+    </div>
+</div>

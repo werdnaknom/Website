@@ -1,0 +1,73 @@
+<!-- .aside-content -->
+<div class="aside-content">
+    <!-- .aside-header -->
+    <header class="aside-header d-block d-md-none">
+        <!-- No header! -->
+    </header><!-- /.aside-header -->
+    <!-- .aside-menu -->
+    <div class="aside-menu overflow-hidden">
+        <!-- .stacked-menu -->
+        <nav id="stacked-menu" class="stacked-menu">
+            <!-- .menu -->
+            <ul class="menu">
+                <!-- .menu-item -->
+                <li class="menu-item has-active">
+                    <a href="{{ url_for('main.index') }}"
+                       class="menu-link"><span
+                            class="menu-icon fas fa-home"></span>
+                        <span
+                                class="menu-text">Dashboard</span></a>
+                </li><!-- /.menu-item -->
+                <li class="menu-item has-active">
+                    <a href="{{ url_for('csv.get_csv') }}"
+                       class="menu-link"><span
+                            class="menu-icon fas fa-align-left"></span> <span
+                            class="menu-text">Get Test Results</span></a>
+                </li><!-- /.menu-item -->
+                <li class="menu-item has-active">
+                    <a href="{{ url_for('post.upload_file') }}"
+                       class="menu-link"><span
+                            class="menu-icon fas fa-arrow-alt-circle-down"></span>
+                        <span
+                                class="menu-text">Post Process Results</span></a>
+                </li><!-- /.menu-item -->
+                <!--
+                <li class="menu-item has-active">
+                    <a href="{{ url_for('testplan.create_testplan') }}"
+                       class="menu-link"><span
+                            class="menu-icon fas fa-file-export"></span> <span
+                            class="menu-text">Create Test Plan</span></a>
+                </li> --><!-- /.menu-item -->
+                <li class="menu-item has-active">
+                    <a href="{{ url_for('product.products') }}"
+                       class="menu-link"><span
+                            class="menu-icon fas fa-microchip"></span> <span
+                            class="menu-text">Product List</span></a>
+                </li><!-- /.menu-item -->
+                <!-- .menu-header -->
+                <li class="menu-item has-child">
+                    <a href="#" class="menu-link"><span
+                            class="menu-icon fas fa-microchip"></span> <span
+                            class="menu-text">Products</span></a>
+                    <!-- child menu -->
+                    <ul class="menu">
+                        {% for product in product_names() %}
+                        <li class="menu-item">
+                            <a href="{{ url_for('product.product', product=product) }}"
+                               class="menu-link">{{ product
+                                }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul><!-- /child menu -->
+                </li><!-- /.menu-item -->
+
+            </ul><!-- /.menu -->
+        </nav><!-- /.stacked-menu -->
+    </div><!-- /.aside-menu -->
+    <!-- Skin changer -->
+    <footer class="aside-footer border-top p-3">
+        <button class="btn btn-light btn-block text-primary" data-toggle="skin">
+            Night mode <i
+                class="fas fa-moon ml-1"></i></button>
+    </footer><!-- /Skin changer -->
+</div><!-- /.aside-content -->

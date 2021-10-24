@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<form method="post">
+    {{form.hidden_tag()}}
+
+    <table id="filterTable">
+        <caption> Results Filter Table</caption>
+        <thead>
+        <tr>
+            <th>Filter</th>
+            <th>Comparison</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td aligh="center"> {{ form.product.label }}</td>
+            <td align="center"> =</td>
+            <td align="center"> {{form.product }}</td>
+        </tr>
+        <tr>
+            <td align="center"> {{ form.test.label }}</td>
+            <td align="center"> = </td>
+            <td align="center"> {{ form.test }} </td>
+        </tr>
+        <tr>
+            <td align="center"> {{ form.status.label }}</td>
+            <td align="center"> = </td>
+            <td align="center"> {{ form.status }} </td>
+        </tr>
+
+        {% for field in form %}
+
+        {% if field.type == "FormField" %}
+        <tr>
+            <td align="center"> {{field.label }}</td>
+            <td align="center"> {{ field.comparison }}</td>
+            <td align="center"> {{field.value}}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {{form.submit}}
+</form>
+
+<div>
+    {% if filter_dict %}
+    <p>{{filter_dict}}</p>
+
+    {%endif %}
+    <p> </p>
+</div>
+
+{% if form.errors %}
+<ul class="errors">
+    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+    {% for error in field_errors %}
+    <li>{{ form[field_name].label }}: {{ error }}</li>
+    {% endfor %}
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+
+{% block page_js %}
+<script type="text/javascript">
+    /*
+$(function() { // when page loads
+    const table = document.getElementById("filterTable");
+    const rows = ["filter", "comparision", "value", "csrf_token", "addFilter"]
+    $("#addFilter").on("click",function(e) { // when link clicked
+        e.preventDefault(); // stop the click from any further action
+        const newRowNum = console.log(table.rows.length)
+        const oldRow = table.rows[1];
+        const newRow = oldRow.cloneNode(true);
+        newRow.id = "Bob";
+        //console.log(oldRow, newRow);
+        console.log(newRow.cells.length)
+        for (let i = 0; i < newRow.cells.length;i++){
+            console.log(newRow.cells[i])
+
+        }
+
+        table.appendChild(newRow)
+        //const newRow = table.insertRow(-1); //insert at end of table
+        //let newCell = newRow.insertCell(0);
+        //let newText = document.createTextNode("Hello World");
+        //newCell.appendChild(newText);
+        //console.log(newRow);
+        //const filterHeaders = table.headers;
+        //console.log(newRowNum)
+        $(table).find('tbody').append(`<tr>
+            {% for filter in form.variables %}
+            {% for field in filter %}
+            {% set id_str="replaceMe" %}
+            <td> {{ field(id=id_str)}}</td>
+            {% endfor %}
+            <td>
+                <button id="addFilter">Click me!</button>
+            </td>
+            {% endfor %}
+        </tr>`);
+    });
+});
+ *\
+</script>
+{% endblock %}

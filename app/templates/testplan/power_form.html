@@ -1,0 +1,278 @@
+<div class="card card-expansion-item">
+    <div class="card-header border-0" id="headingFour">
+        <button class="btn btn-reset collapsed" data-toggle="collapse" data-target="#collapseFour"
+                aria-expanded="false"
+                aria-controls="collapseFour" type="button">
+            <span class="collapse-indicator mr-2"><i class="fa fa-fw fa-caret-right"></i></span>
+            <span>Powersupply Setup</span>
+        </button>
+    </div>
+    <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+        <div class="card-body pt-0">
+            {% for config in form.power_configs %}
+            <div class="power_config" id="power_config">
+                <div id="config_1">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <h5><label>{{config.config_name.label}}:</label></h5>
+                        </div>
+                        <div class="col-lg-3">
+                            {{ config.config_name(class_='form-control') }}
+                        </div>
+                    </div>
+                    <br>
+                    <!-- grid row -->
+                    <div class="row">
+                        <!-- grid column -->
+                        <div class="col-lg-3">
+                            <!-- .card -->
+                            <div class="card bg-warning">
+                                <div class="card-header">Powersupply Channel One</div>
+                                <!-- .card-body -->
+                                <div class="card-body">
+                                    <fieldset>
+
+                                        <div class="form-group">
+                                            {% for field in config.power_channel_1 %}
+                                            {% if field.type == 'CSRFTokenField' %}
+                                            {{ field }}
+                                            {% elif field.type == "FieldList" %}
+                                            <div class="table dt-responsive nowrap w-100">
+                                                <table class="no_error" id="power_1_voltages_table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col">Order</th>
+                                                        <th scope="col">Voltages</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for voltage in field %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ voltage(class_='form-control') }}
+                                                        </td>
+                                                    </tr>
+
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            {% else %}
+                                            <label>{{ field.label }}</label>
+                                            {{ field(class_='form-control') }}
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </div>
+                                        <!-- /.form-group -->
+                                    </fieldset>
+                                </div>
+                                <!-- /.card-body -->
+
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /grid column -->
+
+                        <!-- grid column -->
+                        <div class="col-lg-3">
+                            <!-- .card -->
+                            <div class="card bg-primary">
+                                <div class="card-header">Powersupply Channel Two</div>
+                                <!-- .card-body -->
+                                <div class="card-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            {% for field in config.power_channel_2 %}
+                                            {% if field.type == 'CSRFTokenField' %}
+                                            {{ field }}
+                                            {% elif field.type == "FieldList" %}
+                                            <div class="table dt-responsive nowrap w-100">
+                                                <table class="no_error" id="power_2_voltages_table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col">Order</th>
+                                                        <th scope="col">Voltages</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for voltage in field %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ voltage(class_='form-control') }}
+                                                        </td>
+                                                    </tr>
+
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            {% else %}
+                                            <label>{{ field.label }}</label>
+                                            {{ field(class_='form-control') }}
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </div>
+                                        <!-- /.form-group -->
+                                    </fieldset>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /grid column -->
+
+                        <!-- grid column -->
+                        <div class="col-lg-3">
+                            <!-- .card -->
+                            <div class="card bg-success">
+                                <div class="card-header">Powersupply Channel Three</div>
+                                <!-- .card-body -->
+                                <div class="card-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            {% for field in config.power_channel_3 %}
+                                            {% if field.type == 'CSRFTokenField' %}
+                                            {{ field }}
+                                            {% elif field.type == "FieldList" %}
+                                            <div class="table dt-responsive nowrap w-100">
+                                                <table class="no_error" id="power_3_voltages_table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col">Order</th>
+                                                        <th scope="col">Voltages</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for voltage in field %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ voltage(class_='form-control') }}
+                                                        </td>
+                                                    </tr>
+
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            {% else %}
+                                            <label>{{ field.label }}</label>
+                                            {{ field(class_='form-control') }}
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </div>
+                                        <!-- /.form-group -->
+                                    </fieldset>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /grid column -->
+
+                        <!-- grid column -->
+                        <div class="col-lg-3">
+                            <!-- .card -->
+                            <div class="card">
+                                <div class="card-header">Powersupply Channel Four</div>
+                                <!-- .card-body -->
+                                <div class="card-body">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            {% for field in config.power_channel_4 %}
+                                            {% if field.type == 'CSRFTokenField' %}
+                                            {{ field }}
+                                            {% elif field.type == "FieldList" %}
+                                            <div class="table dt-responsive nowrap w-100">
+                                                <table class="no_error" id="power_4_voltages_table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col">Order</th>
+                                                        <th scope="col">Voltages</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for voltage in field %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ voltage(class_='form-control') }}
+                                                        </td>
+                                                    </tr>
+
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            {% else %}
+                                            <label>{{ field.label }}</label>
+                                            {{ field(class_='form-control') }}
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </div>
+                                        <!-- /.form-group -->
+                                    </fieldset>
+                                    <!-- /.form-group -->
+                                </div>
+                                <!-- /.card-body -->
+
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /grid column -->
+                    </div>
+                    <!-- /grid row -->
+                </div>
+                <!-- /config 1 -->
+            </div>
+            <!-- /power config -->
+
+            {% endfor %}
+            <button class="btn btn-success" type="button" id="add_config">Add Another Config</button>
+        </div>
+    </div>
+</div>
+
+
+{% block page_js %}
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#add_config').click(function () {
+        clonePowerConfig('div.power_config:last', 'powerconfig');
+    });
+});
+function clonePowerConfig(selector, type) {
+    var master_config = document.getElementById("power_config");
+    var config_len = 1
+    //console.log(config_len)
+    var configClone = master_config.cloneNode(true);
+    //configClone.id = "config_" + config_len
+
+
+    $(configClone).find(':input').each(function() {
+        var name = $(this).attr('name').replace('-0-','-' + (config_len) + '-');
+        var id = name;
+        console.log(name)
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    });
+    //var config_last = document.getElementById("div.power_config:last");
+    master_config.appendChild(configClone);
+
+}
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

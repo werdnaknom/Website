@@ -1,0 +1,99 @@
+
+<div class="card card-expansion-item" id="mediaform">
+    <div class="card-header border-0" id="headingThree">
+        <button class="btn btn-reset collapsed" data-toggle="collapse" data-target="#collapseThree"
+                aria-expanded="false"
+                aria-controls="collapseThree" type="button">
+            <span class="collapse-indicator mr-2"><i class="fa fa-fw fa-caret-right"></i></span>
+            <span>Media Type Information</span>
+        </button>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+        <div class="card-body pt-0">
+
+            <fieldset>
+                <div class="table dt-responsive nowrap w-100">
+                    <table class="no_error" id="media_types_table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Media Type</th>
+                            <th scope="col">Media Speeds</th>
+                            <th scope="col"> <button class="btn" type="button" id="add_speed"><i style="color:green" class="fas fa-plus-circle fa-2x"></i></button> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for media in form.media %}
+                        <tr id="media_{{loop.index}}">
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{media.media_type(class_='form-control')}}</td>
+                            <td>
+                                {% for speed in media.media_speeds %}
+                                {{ speed(class_='form-control') }}
+                                {% endfor %}
+
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </fieldset>
+            <!--
+            <button id="btn1" type="button" onclick="thanks()">button due!</button>
+            -->
+        </div>
+    </div>
+</div>
+
+{% block page_js %}
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#add_speed').click(function () {
+        cloneMedia('div.table:last', 'media');
+    });
+});
+function cloneMedia(selector, type) {
+    var media_table = document.getElementById("media_types_table");
+    var table_len = media_table.rows.length;
+    var row = document.getElementById("media_1");
+    var rowClone = row.cloneNode(true);
+    rowClone.id = "media_" + table_len
+
+    $(rowClone).find(':input').each(function() {
+        var name = $(this).attr('name').replace('-0-','-' + (table_len-1) + '-');
+        var id = name;
+        //console.log(name)
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    });
+    $(rowClone).find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-0-','-' + (table_len-1) + '-');
+        //console.log(newFor)
+        $(this).attr('for', newFor);
+    });
+    $(rowClone).find('th').each(function() {
+        this.innerHTML=table_len;
+    });
+
+    media_table.appendChild(rowClone)
+}
+
+
+</script>
+{% endblock %}
+
+
+<!--
+<script type="text/javascript">
+function thanks(){
+    var button = document.getElementById("btn1");
+    button.value = "Thanks!";
+    button.disabled = true;
+}
+
+
+</script>
+-->
