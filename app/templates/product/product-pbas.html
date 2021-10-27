@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">PBA</th>
+        <th scope="col">Reworks</th>
+        <th scope="col">Notes</th>
+        <th scope="col">Modified Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for pba in pbas %}
+    <tr>
+        <th scope="row">{{loop.index}}</th>
+        <td>{{pba.part_number}}</td>
+        <td>{{pba.reworks | length}}</td>
+        <td>{{pba.notes}}</td>
+        <td>{{pba.modified_date}}</td>
+        <td><a href="{{url_for('.testdata', test=test, product=pba.project)}}">View Data </a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

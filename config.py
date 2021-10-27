@@ -175,6 +175,7 @@ class Config(object):
     PRODUCT = "PROJECT"
     PBA = "PBA"
     REWORK = "REWORK"
+    RUNID = "RUNID"
 
 
 class DeploymentConfig(Config):

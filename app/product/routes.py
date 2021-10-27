@@ -1,6 +1,6 @@
 from flask import render_template, jsonify, Markup, send_file, current_app
 import requests
-from app.Entities import Product
+from Entities.Entities import ProjectEntity, PBAEntity, ReworkEntity, RunidEntity
 from app.product import bp
 from io import BytesIO
 import datetime
@@ -23,17 +23,24 @@ def product(product):
     '''
     product_dict = MongoDatabaseFunctions.find_product(product=product)
     print(product_dict)
-    product_entity = Product.from_dict(product_dict)
+    product_entity = ProjectEntity.from_dict(product_dict)
+    pbas = MongoDatabaseFunctions.find_pbas_by_product(product)
+    reworks = MongoDatabaseFunctions.count_reworks_by_product(product)
+    runids = MongoDatabaseFunctions.find_runids_by_product(product)
 
-    print(product_entity.tests_unique)
+    # print(product_entity.tests_unique)
     return render_template('/product/product.html',
                            title=product_entity.descriptor,
                            product=product_entity,
+                           pbas=pbas,
+                           reworks=reworks,
+                           runids=runids,
                            description="This is a description")
 
 
 @bp.route('/products/<product>/pbas')
 def product_pbas(product):
+    '''
     s = requests.Session()
     s.trust_env = False
     print(product)
@@ -42,10 +49,21 @@ def product_pbas(product):
     r = s.get(current_app.config["DATABASE"] + 'assembly/overview',
               json=json_filter)
     return jsonify(r.json())
+    '''
+    pba_entities = []
+    pbas = MongoDatabaseFunctions.find_pba_entity_by_product(product)
+
+    for pba in pbas:
+        pba_entity = PBAEntity.from_dict(pba)
+        pba_entity.reworks.extend(MongoDatabaseFunctions.find_reworks_by_pba(pba_entity.part_number))
+        pba_entities.append(pba_entity)
+    return render_template('/product/product-pbas.html',
+                           pbas=pba_entities)
 
 
 @bp.route('/products/<product>/reworks')
 def product_reworks(product):
+    '''
     s = requests.Session()
     s.trust_env = False
     print(product)
@@ -54,11 +72,31 @@ def product_reworks(product):
     r = s.get(current_app.config["DATABASE"] + 'rework/overview',
               json=json_filter)
     return jsonify(r.json())
+    '''
+    rework_entities = []
+    reworks = MongoDatabaseFunctions.find_rework_entities_by_product(product=product)
+
+    for rework in reworks:
+        rework_entity = ReworkEntity.from_dict(rework)
+        rework_entities.append(rework_entity)
+    return render_template('/product/product-reworks.html',
+                           reworks_entities=rework_entities)
 
 
 @bp.route('/products/<product>/runids')
 def product_runids(product):
-    return jsonify("10")
+    runid_entities = []
+    runids = MongoDatabaseFunctions.find_runid_entities_by_product(product)
+    for runid in runids:
+        print(runid["project"])
+        runid_entity = RunidEntity.from_dict(runid)
+        runid_entities.append(runid_entity)
+        print(runid_entity)
+
+    return render_template('product/product-runids.html',
+                           runid_entities=runid_entities)
+
+
 
 
 """
