@@ -15,8 +15,3 @@ def index():
 def table():
     return render_template('table-filters-datatables.html')
 
-@bp.route("/test")
-def test():
-    return MongoDatabaseFunctions.list_products()
-
-
