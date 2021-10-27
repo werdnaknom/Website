@@ -1,6 +1,8 @@
 from flask import render_template
 from app.main import bp
 
+from database_functions.mongodatabase_functions import MongoDatabaseFunctions
+
 
 @bp.route('/dashboard')
 @bp.route('/index')
@@ -12,5 +14,9 @@ def index():
 @bp.route('/table')
 def table():
     return render_template('table-filters-datatables.html')
+
+@bp.route("/test")
+def test():
+    return MongoDatabaseFunctions.list_products()
 
 

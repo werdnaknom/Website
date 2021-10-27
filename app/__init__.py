@@ -1,10 +1,11 @@
-from flask import Flask
+from flask import Flask, g, current_app
 from config import Config
 import requests
 from flask_wtf import CSRFProtect
 from celery import Celery
+from database_functions.mongodatabase_functions import MongoDatabaseFunctions
 
-from flask_bootstrap import Bootstrap
+from .extensions import mongo, bootstrap
 
 celeryapp = Celery('web', broker='pyamqp://guest:guest@localhost:5672/vhost',
                    backend="redis://localhost:6379/0")
@@ -26,15 +27,35 @@ def init_celery(app: Flask):
     return celeryapp
 
 
+'''
+def get_database(app: Flask, config_class: Config):
+    """
+    Configuration method to return db instance
+    :return:
+    """
+    db_type = config_class.DATABASE
+    if db_type == "MONGODB":
+        MongoDatabaseFunctions.init()
+
+    return db
+'''
+
+
 def create_app(config_class=Config):
     app = Flask(__name__)
-    bootstrap = Bootstrap(app)
+
+    app.config.from_object(config_class)
+    bootstrap.init_app(app)
+    mongo.init_app(app)
+    print(config_class.MONGO_URI, config_class.MONGO_DBNAME)
 
     # Configure Celery
     celeryapp = init_celery(app)
 
+    # Configure Database
+    # db = get_database(app, config_class)
+
     CSRFProtect(app)
-    app.config.from_object(config_class)
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
@@ -93,18 +114,29 @@ def create_app(config_class=Config):
     @app.context_processor
     def utility_processor():
         def get_product_names():
-            s = requests.Session()
-            s.trust_env = False
-            r = s.get(config_class.DATABASE + 'list')
-            # return ["Need", "To", "Uncomment", "on", "server"]
-            return r.json()
+            try:
+                '''
+                s = requests.Session()
+                s.trust_env = False
+                r = s.get(config_class.DATABASE + 'list')
+                # return ["Need", "To", "Uncomment", "on", "server"]
+                return r.json()
+                '''
+                products = MongoDatabaseFunctions.list_products()
+                #return ["Need", "To", "Uncomment", "on", "server"]
+                return products
+            except:
+                return ""
 
         def get_product_update_times():
-            s = requests.Session()
-            s.trust_env = False
-            r = s.get(config_class.DATABASE + 'products_update_time')
-            print(r.json())
-            return r.json()
+            try:
+                s = requests.Session()
+                s.trust_env = False
+                r = s.get(config_class.DATABASE_DOCKER_URL + 'products_update_time')
+                print(r.json())
+                return r.json()
+            except:
+                return ""
 
         return dict(product_names=get_product_names,
                     product_update_times=get_product_update_times)

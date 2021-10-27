@@ -5,6 +5,8 @@ from app.product import bp
 from io import BytesIO
 import datetime
 
+from database_functions.mongodatabase_functions import MongoDatabaseFunctions
+
 
 # from bokeh.plotting import figure
 # from bokeh.resources import CDN
@@ -12,11 +14,15 @@ import datetime
 
 @bp.route('/products/<product>')
 def product(product):
+    '''
     s = requests.Session()
     s.trust_env = False
     json_filter = {"filters": {"dut": product}}
     r = s.get(current_app.config["DATABASE"] + 'list', json=json_filter)
     product_dict = r.json()[0]
+    '''
+    product_dict = MongoDatabaseFunctions.find_product(product=product)
+    print(product_dict)
     product_entity = Product.from_dict(product_dict)
 
     print(product_entity.tests_unique)

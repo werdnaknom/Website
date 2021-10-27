@@ -4,7 +4,6 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-
 """
 EntityBuilders Structure:
     Product, SpeedAssembly, Rework, Submission, Runid, TestCategory, Capture, Waveform
@@ -72,13 +71,19 @@ class Config(object):
     DATADIRECTORY = os.environ.get("ATS_DATA_DIRECTORY")
     PICKLEDIRECTORY = os.environ.get("ATS_PICKLE_DIRECTORY")
 
+    # DATABASE SETUP
+    DATABASE = "MONGODB"
+    #DATABASE = "PICKLEDB"
+    #DATABASE = "DIRECTORYDB"
+
     # MONGODB SETUP
-    MONGO_URI = os.environ.get("MONGO_URI")
+    MONGO_DBNAME = "ATS2"
+    MONGO_URI = os.environ.get("MONGO_URI") or "mongodb://192.168.1.226:27017" + "/" + MONGO_DBNAME
 
     # BACKEND SETUP
     BACKEND_DOCKER = os.environ.get("BACKEND_DOCKER_NAME")
     BACKEND_PORT = os.environ.get("BACKEND_PORT")
-    DATABASE = f"http://{BACKEND_DOCKER}:{BACKEND_PORT}/"
+    DATABASE_DOCKER_URL = f"http://{BACKEND_DOCKER}:{BACKEND_PORT}/"
 
     # TESTPLAN SETUP
     TESTPLAN_DOCKER = os.environ.get("TESTPLAN_DOCKER_NAME")
@@ -167,6 +172,10 @@ class Config(object):
 
     AGEFILE = 'testrun.json'
 
+    PRODUCT = "PROJECT"
+    PBA = "PBA"
+    REWORK = "REWORK"
+
 
 class DeploymentConfig(Config):
     pass
@@ -177,11 +186,12 @@ class DevelopmentConfig(Config):
     DEBUG = True
 
     # MONGODB SETUP
+    MONGO_DBNAME = "ATS2"
     MONGO_URI = "mongodb://localhost:27017"  # Must setup in standalone docker
     redis_port = 6379
     REDIS_URL = 'redis://localhost'
 
-    DATABASE = "http://npoflask2.jf.intel.com:5001/"
+    DATABASE_DOCKER_URL = "http://npoflask2.jf.intel.com:5001/"
     TESTPLAN = "http://npoflask2.jf.intel.com:5000/"
 
     UPLOAD_FOLDER = r"C:\Users\ammonk\OneDrive - Intel Corporation\Desktop\Test_Folder\fake_uploads"
