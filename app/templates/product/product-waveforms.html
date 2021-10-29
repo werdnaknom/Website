@@ -1,0 +1,32 @@
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Runid</th>
+        <th scope="col">PBA</th>
+        <th scope="col">Rework</th>
+        <th scope="col">Serial Number</th>
+        <th scope="col">Configuration</th>
+        <th scope="col">Status</th>
+        <th scope="col">Comments</th>
+        <th scope="col">Max Power</th>
+        <th scope="col">Modified Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for capture in wfm_captures %}
+    <tr>
+        <th scope="row">{{capture._id}}</th>
+        <td>{{capture.capture}}</td>
+        <td>{{capture.runid}}</td>
+        <td>{{capture.test_category}}</td>
+        <td> <img src="{{ url_for('static', filename='img/capture.png')}}" alt="capture" width="120" height="90" /></td>
+        <td> <img src="{{capture.capture_image.path}}" alt="capture" width="120" height="90" /></td>
+        <td> <img src="/{{capture.capture_image.path}}" alt="capture" width="120" height="90" /></td>
+        <td> <img src="/{{capture.capture_image.path_str}}" alt="capture" width="120" height="90" /></td>
+        <td> <img src="{{capture.capture_image.path}}" alt="capture" width="120" height="90" /></td>
+        <td> <img src="{{capture.capture_image.path_str}}" alt="capture" width="120" height="90" /></td>
+        <td> <img src="F:\ATS DATABASE\Island Rapids\K87758-002\00\894DA0\1014\Tests\Aux To Main\10\capture.png" alt="capture" width="120" height="90" /></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

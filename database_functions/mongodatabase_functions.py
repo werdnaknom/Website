@@ -71,8 +71,17 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         return r
 
     @staticmethod
-    def find_runid_entities_by_product(product:str) -> t.List[t.Dict]:
+    def find_runid_entities_by_product(product: str) -> t.List[t.Dict]:
         cursor = mongo.db[Config.RUNID].find({"project": product})
         r = list(cursor)
         return r
 
+    @staticmethod
+    def find_waveform_capture_entities_by_product(product: str) -> t.List[t.Dict]:
+        captures = []
+        runids = mongo.db[Config.RUNID].distinct("runid", {"project": product})
+        for runid in runids:
+            cursor = mongo.db[Config.CAPTURE].find({"runid": runid, "test_category": "Aux To Main"})
+            r = list(cursor)
+            captures.extend(r)
+        return captures

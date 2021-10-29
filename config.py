@@ -176,6 +176,7 @@ class Config(object):
     PBA = "PBA"
     REWORK = "REWORK"
     RUNID = "RUNID"
+    CAPTURE = "DATACAPTURE"
 
 
 class DeploymentConfig(Config):

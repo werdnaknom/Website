@@ -13,7 +13,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for runid in runid_entities %}
+    {% for runid in runids %}
     <tr>
         <th scope="row">{{runid._id}}</th>
         <td>{{runid.pba}}</td>
@@ -22,7 +22,7 @@
         <td>{{runid.testrun.configuration}}</td>
         <td>{{runid.status.status}}</td>
         <td>{{runid.status.comments}}</td>
-        <td>{{runid.power.max_power}}</td>
+        <td>{{runid.power.max_power}} W</td>
         <td>{{runid.modified_date}}</td>
     </tr>
     {% endfor %}
