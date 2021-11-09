@@ -36,6 +36,8 @@
       unusedLink.setAttribute('disabled', true);
 
 
+
+
     </script>
     <!-- END THEME STYLES -->
 
@@ -43,7 +45,11 @@
     <!-- styles for specific page goes here -->
     <!-- END PAGE LEVEL STYLES -->
 
-    <title>{{ title }}</title>
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
 </head>
 <body>
 <div class="app">

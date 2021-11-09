@@ -1,4 +1,5 @@
 import typing as t
+from dataclasses import dataclass, field
 
 from flask import render_template, jsonify, Markup, send_file, current_app
 import requests
@@ -8,6 +9,22 @@ from io import BytesIO
 import datetime
 
 from database_functions.mongodatabase_functions import MongoDatabaseFunctions
+
+
+@dataclass
+class PowerChannel():
+    name: str
+    group: str
+    on: bool
+    voltages: t.List = field(default_factory=list)
+    slew_rates: t.List = field(default_factory=list)
+
+    '''@classmethod
+    def build_from_runid(cls, runid:str, channel:0):
+        cursor = MongoDatabaseFunctions.get_runid_voltages_by_channel(runid=runid, channel=channel)
+        result = list(cursor)[0]
+        pch = cls(name=, group=, on=, voltages=, slew_rates=)
+    '''
 
 
 # from bokeh.plotting import figure
@@ -34,7 +51,8 @@ def get_rework_entities_by_product(product: str) -> t.List[ReworkEntity]:
         rework_entities.append(rework_entity)
     return rework_entities
 
-def get_runid_entities_by_product(product:str) -> t.List[ReworkEntity]:
+
+def get_runid_entities_by_product(product: str) -> t.List[ReworkEntity]:
     runid_entities = []
     runids = MongoDatabaseFunctions.find_runid_entities_by_product(product)
     for runid in runids:
@@ -42,7 +60,8 @@ def get_runid_entities_by_product(product:str) -> t.List[ReworkEntity]:
         runid_entities.append(runid_entity)
     return runid_entities
 
-def get_capture_entities_by_product(product:str) -> t.List[ReworkEntity]:
+
+def get_capture_entities_by_product(product: str) -> t.List[ReworkEntity]:
     capture_entities = []
     capture_dicts = MongoDatabaseFunctions.find_waveform_capture_entities_by_product(product)
     print(capture_dicts[0])
@@ -53,6 +72,32 @@ def get_capture_entities_by_product(product:str) -> t.List[ReworkEntity]:
         except:
             pass
     return capture_entities
+
+
+def get_runid_by_id(runid: str):
+    runid_dict = MongoDatabaseFunctions.find_runid_by_id(id=runid)
+    return runid_dict
+
+
+def get_capture_temperatures_by_runid(runid: str):
+    temperature, voltages = MongoDatabaseFunctions.get_runid_capture_data(runid=runid)
+    return temperature, voltages
+
+
+def get_runid_voltage_channels(runid: str) -> t.Tuple[t.List, t.List, t.List, t.List]:
+    channel0 = get_runid_voltage_channel(runid, channel="0")
+    channel1 = get_runid_voltage_channel(runid, channel="1")
+    channel2 = get_runid_voltage_channel(runid, channel="2")
+    channel3 = get_runid_voltage_channel(runid, channel="3")
+    return channel0, channel1, channel2, channel3
+
+
+def get_runid_voltage_channel(runid: str, channel: str) -> t.List:
+    channel_info = MongoDatabaseFunctions.get_runid_voltages_by_channel(runid=runid, channel=channel)
+    r = list(channel_info)
+    print(channel_info, r)
+    return r
+
 
 @bp.route('/products/<product>')
 def product(product):
@@ -93,7 +138,7 @@ def product_pbas(product):
     return jsonify(r.json())
     '''
     pba_entities = get_pba_entities_by_product(product)
-    return render_template('/product/product-pbas.html',
+    return render_template('/product/pbas-tab.html',
                            pbas=pba_entities)
 
 
@@ -110,16 +155,15 @@ def product_reworks(product):
     return jsonify(r.json())
     '''
     rework_entities = get_rework_entities_by_product(product)
-    return render_template('/product/product-reworks.html',
+    return render_template('/product/reworks-tab.html',
                            reworks_entities=rework_entities)
 
 
 @bp.route('/products/<product>/runids')
 def product_runids(product):
-
     runid_entities = get_runid_entities_by_product(product)
 
-    return render_template('product/product-runids.html',
+    return render_template('product/runids-tab.html',
                            runid_entities=runid_entities)
 
 
@@ -151,7 +195,6 @@ def product_tests(product):
     print(capture_entities[0])
     return render_template('product/product-waveforms.html',
                            wfm_captures=capture_entities)
-
 
 
 @bp.route('/products/<product>/table')
@@ -194,3 +237,23 @@ def testdata(product, test):
     return send_file(filename_or_fp=output, as_attachment=True,
                      attachment_filename="{}_{}_{}.xlsx".format(product, test,
                                                                 datetime.datetime.now()))
+
+
+from .pages import RunidPage
+
+
+@bp.route('/products/runids/<runid>')
+def runid_overview(runid):
+    runid = get_runid_by_id(runid=runid)
+    runid_entity = RunidEntity.from_dict(runid)
+
+    page = RunidPage(entity=runid_entity, repo=MongoDatabaseFunctions())
+
+    # TODO:: Get types of tests run, temperature and voltages tested.
+    channel0 = get_runid_voltage_channel(runid=runid_entity.runid, channel="0")
+
+
+    # return render_template('product/runid_overview_og.html',
+    return render_template('product/runid_overview.html',
+                           runid_entity=runid_entity,
+                           page=page)

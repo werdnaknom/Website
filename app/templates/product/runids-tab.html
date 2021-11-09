@@ -24,7 +24,16 @@
         <td>{{runid.status.comments}}</td>
         <td>{{runid.power.max_power}} W</td>
         <td>{{runid.modified_date}}</td>
+        <td>
+            <form action="{{url_for('product.runid_overview', runid=runid._id)}}">
+                <input type="submit" value="View Data" class="btn btn-primary"/>
+            </form>
+        </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+
+
+
+

@@ -77,19 +77,19 @@ pageJs:
                 <!-- .nav-tabs -->
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active show" data-toggle="tab" href="#product-overview">Overview</a>
+                        <a class="nav-link active show" data-toggle="tab" href="#overview-tab">Overview</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#product-pbas">PBAs</a>
+                        <a class="nav-link" data-toggle="tab" href="#pbas-tab">PBAs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#product-reworks">Reworks</a>
+                        <a class="nav-link" data-toggle="tab" href="#reworks-tab">Reworks</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#product-runids">Runids</a>
+                        <a class="nav-link" data-toggle="tab" href="#runids-tab">Runids</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#product-data">Test Data</a>
+                        <a class="nav-link" data-toggle="tab" href="#data-tab">Test Data</a>
                     </li>
                 </ul>
                 <!-- /.nav-tabs -->
@@ -101,37 +101,37 @@ pageJs:
         <!-- .tab-content -->
         <div class="tab-content pt-4" id="clientDetailsTabs">
             <!-- .tab-pane -->
-            <div class="tab-pane fade show active" id="product-overview" role="tabpanel"
+            <div class="tab-pane fade show active" id="overview-tab" role="tabpanel"
                  aria-labelledby="product-overview-tab">
-                {% include 'product/product-overview.html' %}
+                {% include 'product/overview-tab.html' %}
 
             </div>
             <!-- /.tab-pane -->
 
             <!-- .tab-pane -->
-            <div class="tab-pane fade" id="product-pbas" role="tabpanel" aria-labelledby="product-pbas-tab">
-                {% include 'product/product-pbas.html' %}
+            <div class="tab-pane fade" id="pbas-tab" role="tabpanel" aria-labelledby="product-pbas-tab">
+                {% include 'product/pbas-tab.html' %}
 
             </div>
             <!-- /.tab-pane -->
 
             <!-- .tab-pane -->
-            <div class="tab-pane fade" id="product-reworks" role="tabpanel" aria-labelledby="product-reworks-tab">
-                {% include 'product/product-reworks.html' %}
+            <div class="tab-pane fade" id="reworks-tab" role="tabpanel" aria-labelledby="product-reworks-tab">
+                {% include 'product/reworks-tab.html' %}
 
             </div>
             <!-- /.tab-pane -->
 
             <!-- .tab-pane -->
-            <div class="tab-pane fade" id="product-runids" role="tabpanel" aria-labelledby="product-runids-tab">
-                {% include 'product/product-runids.html' %}
+            <div class="tab-pane fade" id="runids-tab" role="tabpanel" aria-labelledby="product-runids-tab">
+                {% include 'product/runids-tab.html' %}
 
             </div>
             <!-- /.tab-pane -->
 
             <!-- .tab-pane -->
-            <div class="tab-pane fade" id="product-data" role="tabpanel" aria-labelledby="product-data-tab">
-                <!-- {#{% include 'product/product-data.html' %} #} -->
+            <div class="tab-pane fade" id="data-tab" role="tabpanel" aria-labelledby="product-data-tab">
+                <!-- {#{% include 'product/data-tab.html' %} #} -->
 
             </div>
             <!-- /.tab-pane -->
@@ -139,42 +139,6 @@ pageJs:
         <!-- /.tab-content -->
 
 
-        <!-- .page-sidebar -->
-        <div class="page-sidebar">
-            <!-- .sidebar-header -->
-            <header class="sidebar-header d-sm-none">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active">
-                            <a href="#" onclick="Looper.toggleSidebar()"><i
-                                    class="breadcrumb-icon fa fa-angle-left mr-2"></i>Back</a>
-                        </li>
-                    </ol>
-                </nav>
-            </header>
-            <!-- /.sidebar-header -->
-
-            <!-- .sidebar-section-fill -->
-            <div class="sidebar-section-fill">
-                <!-- .card -->
-                <div class="card card-reflow">
-
-
-                    <!-- .card-body -->
-                    <div class="card-body border-top">
-                        <div class="d-flex justify-content-between my-3">
-                            <h4 class="card-title">Recent activity</h4>
-                            <a href="#">View all</a>
-                        </div>
-
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-            <!-- /.sidebar-section-fill -->
-        </div>
-        <!-- /.page-sidebar -->
     </div>
     <!-- /.page -->
 </div>

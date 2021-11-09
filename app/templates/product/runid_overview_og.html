@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+<!--
+layout: default
+title: Bootstrap Team Overview
+active: pages.team.team-overview
+footer: false
+pluginsCss:
+- flatpickr/flatpickr.min.css
+pluginsJs:
+- flatpickr/flatpickr.min.js
+- chart.js/Chart.min.js
+pageJs:
+- pages/team-overview-demo.js
+-->
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/flatpickr/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.css') }}">
+{% endblock %}
+
+
+{% block content %}
+
+<div>
+    <p>RUNID: {{runid_entity._id}}</p>
+    <p>PRODUCT: {{runid_entity.product}}</p>
+    <p>PBA: {{runid_entity.pba}}</p>
+    <p>REWORK: {{runid_entity.rework}}</p>
+    <p>SERIAL: {{runid_entity.serial}}</p>
+    <p>RUNID STATUS: {{runid_entity.status.status}}</p>
+    <p>TOTAL RUNTIME: {{runid_entity.runtime}}</p>
+    <p>TECHNICIAN: {{runid_entity.testrun.technician}}</p>
+    <p>TESTSTATION: {{runid_entity.testrun.test_station}}</p>
+    <p>CONFIGURATION: {{runid_entity.configuration}}</p>
+    <p>BOARDID: {{runid_entity.boardid}}</p>
+    <p>TESTPOINT: {{runid_entity.test_points}}</p>
+    <p>COMMENT: {{runid_entity.comments}}</p>
+    <p>POWER: {{runid_entity.power}}</p>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block plugin_js %} {% endblock %}
+
+{% block page_js %} {% endblock %}
