@@ -1,0 +1,38 @@
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Runid</th>
+        <th scope="col">PBA</th>
+        <th scope="col">Rework</th>
+        <th scope="col">Serial Number</th>
+        <th scope="col">Configuration</th>
+        <th scope="col">Status</th>
+        <th scope="col">Comments</th>
+        <th scope="col">Max Power</th>
+        <th scope="col">Modified Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for runid in runids %}
+    <tr>
+        <th scope="row">{{runid._id}}</th>
+        <td>{{runid.pba}}</td>
+        <td>{{runid.rework}}</td>
+        <td>{{runid.serial}}</td>
+        <td>{{runid.testrun.configuration}}</td>
+        <td>{{runid.status.status}}</td>
+        <td>{{runid.status.comments}}</td>
+        <td>{{runid.power.max_power}} W</td>
+        <td>{{runid.modified_date}}</td>
+        <td>
+            <form action="{{url_for('product.runid_overview', runid=runid._id)}}">
+                <input type="submit" value="View Data" class="btn btn-primary"/>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+

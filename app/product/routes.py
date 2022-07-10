@@ -1,7 +1,7 @@
 import typing as t
 from dataclasses import dataclass, field
 
-from flask import render_template, jsonify, Markup, send_file, current_app
+from flask import render_template, jsonify, Markup, send_file, current_app, request
 import requests
 from Entities.Entities import ProjectEntity, PBAEntity, ReworkEntity, RunidEntity, WaveformCaptureEntity
 from app.product import bp
@@ -109,7 +109,7 @@ def product(product):
     product_dict = r.json()[0]
     '''
     product_dict = MongoDatabaseFunctions.find_product(product=product)
-    print(product_dict)
+    # print(product_dict)
     product_entity = ProjectEntity.from_dict(product_dict)
     pbas = get_pba_entities_by_product(product)
     reworks = get_rework_entities_by_product(product)
@@ -252,8 +252,150 @@ def runid_overview(runid):
     # TODO:: Get types of tests run, temperature and voltages tested.
     channel0 = get_runid_voltage_channel(runid=runid_entity.runid, channel="0")
 
-
     # return render_template('product/runid_overview_og.html',
     return render_template('product/runid_overview.html',
                            runid_entity=runid_entity,
                            page=page)
+
+
+@bp.route('/products/runids/runid_overview_ajax', methods=('GET', 'POST'))
+def runid_overview_ajax():
+    if request.method == "POST":
+        # TODO:: Get this data dynamically
+        runid = request.form["runid"]
+        runid_request = MongoDatabaseFunctions.find_runid_by_id(runid)
+        system_info_json = runid_request['system_info']
+        probes = system_info_json['probes']
+        ats_version = system_info_json['ats_version']
+        location = "OR"
+        project = "Island Rapids"
+        pba = "K87758-002"
+        rework = 0
+        serial = "894DA0"
+        status = "Complete"
+        status_info = "Test was aborted by user after 3 Hours 18 Minutes 53 Seconds"
+        probes = [
+            {
+                "channel": 1,
+                "part_number": "TDP1000",
+                "serial_number": "B040055",
+                "units": "V",
+                "cal_status": "D",
+                "dynamic_range": 8.5,
+                "deguass": True
+            },
+            {
+                "channel": 2,
+                "part_number": "TCP0030A",
+                "serial_number": "C005015",
+                "units": "A",
+                "cal_status": "D",
+                "dynamic_range": 100,
+                "deguass": True
+            },
+            {
+                "channel": 3,
+                "part_number": "TDP1000",
+                "serial_number": "B040025",
+                "units": "V",
+                "cal_status": "D",
+                "dynamic_range": 84,
+                "deguass": True
+
+            },
+            {
+                "channel": 4,
+                "part_number": "TCP0030A",
+                "serial_number": "C003949",
+                "units": "A",
+                "cal_status": "D",
+                "dynamic_range": 100,
+                "deguass": True
+            },
+            {
+                "channel": 5,
+                "part_number": "TDP1000",
+                "serial_number": "B040051",
+                "units": "V",
+                "cal_status": "D",
+                "dynamic_range": 8.5,
+                "deguass": True
+            },
+            {
+                "channel": 6,
+                "part_number": "TDP1000",
+                "serial_number": "B040097",
+                "units": "V",
+                "cal_status": "D",
+                "dynamic_range": 8.5,
+                "deguass": True
+            },
+            {
+                "channel": 7,
+                "part_number": "TDP1000",
+                "serial_number": "B040050",
+                "units": "V",
+                "cal_status": "D",
+                "dynamic_range": 8.5,
+                "deguass": True
+            },
+            {
+                "channel": 8,
+                "part_number": "TDP1000",
+                "serial_number": "B040101",
+                "units": "V",
+                "cal_status": "D",
+                "dynamic_range": 8.5,
+                "deguass": True
+            }
+        ]
+    ats_version = "ATS 2.0 Alpha 25_19E77"
+    technician = "phyllis sanderson"
+    test_station = "LNO-TEST9"
+    configuration = "4"
+    board_id = 2401
+    test_points = {
+        "0": "3P3V_AUX",
+        "1": "3P3V_AUX_CURRENT",
+        "2": "12V_MAIN",
+        "3": "12V_CURRENT",
+        "4": "3P3V",
+        "5": "1P8_VDDH_CVL1",
+        "6": "1P8_VDDH_CVL2",
+        "7": "1P1V_VDDH"
+    }
+    for tp in test_points.keys():
+        probes[int(tp)]["Name"] = test_points[tp]
+
+    comments = "start up config 4"
+
+    # return jsonify({'htmlresponse': render_template('product/runid_overview.html', modal_runid=runid_request)})
+
+    tests_run = MongoDatabaseFunctions.get_runid_test_categories(runid=runid_request["runid"])
+    tests_run_str = ", ".join(tests_run)
+
+    # print(runid_request["runid"])
+    temperatures, voltages = MongoDatabaseFunctions.get_runid_capture_data(runid=runid_request["runid"])
+    # print(temperatures)
+    # print(voltages)
+    for l in voltages:
+        print("--------------")
+        for key in l.keys():
+            print(key, l[key])
+    return jsonify(
+        {'htmlresponse': render_template('product/runid_overview_with_dash.html',
+                                         probes=probes,
+                                         test_points=test_points,
+                                         ats_version=ats_version,
+                                         technician=technician.title(),
+                                         test_station=test_station,
+                                         configuration=configuration,
+                                         board_id=board_id,
+                                         pba=pba,
+                                         serial_number=serial,
+                                         rework=rework,
+                                         status=status,
+                                         status_info=status_info,
+                                         comments=comments,
+                                         tests_run=tests_run_str
+                                         )})

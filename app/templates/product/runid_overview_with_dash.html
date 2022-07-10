@@ -1,0 +1,82 @@
+<div class="container-fluid">
+
+
+    <div class="container-fluid">
+        <div class="row" id="setup_information">
+            <div class="col border">
+                <h5> Runid Information </h5>
+                <p>
+                    Runid Status:
+                    {% if status == "Aborted" %}
+                    <b class="text-danger">{{status}}</b>
+                    {% elif status == "Complete" %}
+                    <b class="text-success"> {{status}}</b>
+                    {% else %}
+                    <b class="text-warning"> {{status}}</b>
+                    {% endif %}
+                    <br>
+                    {{status_info}}
+                </p>
+                <p> Configuration: {{configuration}}</p>
+                <p> Comments: <br> {{comments}}</p>
+                <p> Tests Run: {{tests_run}}</p>
+
+            </div>
+            <div class="col border">
+                <h5> Setup Information </h5>
+                <p>ATS Version: {{ ats_version }}</p>
+                <p>Technician: {{technician}}</p>
+                <p>Station: {{test_station}}</p>
+            </div>
+            <div class="col border">
+                <h5> Board Information</h5>
+                <p>PBA: {{pba}} Rework {{rework}}</p>
+                <p>Serial/MAC: {{serial_number}}</p>
+                <p>Board ID: {{board_id}}</p>
+            </div>
+        </div>
+        <div class="row" id="probe_row">
+            <div class="col">
+                <h1> Test Points </h1>
+                <br>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <td> Channel</td>
+                        <td> Name</td>
+                        <td> Probe</td>
+                        <td> Probe Serial</td>
+                        <td> Calibration Status</td>
+                        <td> Dynamic Range</td>
+                        <td> Deguassed</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for probe in probes %}
+                    <tr>
+                        <td>{{probe["channel"]}}
+                        <td>{{probe["Name"]}}</td>
+                        <td>{{probe["part_number"]}}</td>
+                        <td>{{probe["serial_number"]}}</td>
+                        <td>{{probe["cal_status"]}}</td>
+                        <td>{{probe["dynamid_range"]}} {{probe["units"]}}</td>
+                        <td>
+                            {% if probe['units'] == 'A' %}
+                            {{probe["deguass"]}}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <!--<iframe src="{{url_for('/runid_viewdata/')}}" frameborder="0"></iframe> -->
+            <a href="{{url_for('/runid_viewdata/')}}">LINK</a>
+        </div>
+    </div>
+</div>

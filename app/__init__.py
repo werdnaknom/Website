@@ -49,19 +49,21 @@ def create_app(config_class=Config):
     mongo.init_app(app)
     print(config_class.MONGO_URI, config_class.MONGO_DBNAME)
 
+
     # Configure Celery
     celeryapp = init_celery(app)
 
     # Configure Database
     # db = get_database(app, config_class)
 
-    CSRFProtect(app)
+    csrf = CSRFProtect(app)
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
     from app.product import bp as product_bp
     app.register_blueprint(product_bp)
+    csrf.exempt(product_bp)
 
     from app.testplan import bp as testplan_bp
     app.register_blueprint(testplan_bp)
@@ -105,6 +107,10 @@ def create_app(config_class=Config):
     from .post_processing.tests.vsd import bp as vsd_bp
     app.register_blueprint(vsd_bp, url_prefix="/VoltageSystemDynamics")
 
+    ''' DASH '''
+    from .plotlydash.runid_viewdata import init_dash
+    app = init_dash(app)
+    csrf._exempt_views.add('dash.dash.dispatch')
     ''' END test post processing '''
 
     ''' Celery Task Pages '''
@@ -123,7 +129,7 @@ def create_app(config_class=Config):
                 return r.json()
                 '''
                 products = MongoDatabaseFunctions.list_products()
-                #return ["Need", "To", "Uncomment", "on", "server"]
+                # return ["Need", "To", "Uncomment", "on", "server"]
                 return products
             except:
                 return ""

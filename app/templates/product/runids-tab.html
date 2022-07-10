@@ -25,9 +25,9 @@
         <td>{{runid.power.max_power}} W</td>
         <td>{{runid.modified_date}}</td>
         <td>
-            <form action="{{url_for('product.runid_overview', runid=runid._id)}}">
-                <input type="submit" value="View Data" class="btn btn-primary"/>
-            </form>
+            <button data-id="{{runid._id}}" class="runidinfo btn btn-success"
+                    formaction="/products/runids/runids_ajax">View Data
+            </button>
         </td>
     </tr>
     {% endfor %}
@@ -35,5 +35,44 @@
 </table>
 
 
+<!-- Modal -->
+<div class="modal fade" id="runidModal" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+            </div>
+        </div>
+    </div>
+</div>
 
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.runidinfo').click(function(){
+            var runid = $(this).data('id');
+            $.ajax({
+                url: '/products/runids/runid_overview_ajax',
+                type:'post',
+                data: {runid: runid},
+                success: function(data){
+                    $('.modal-title').html("Runid: ").append(runid);
+                    $('.modal-body').html(data);
+                    $('.modal-body').append(data.htmlresponse);
+                    $('#runidModal').modal('show');
+                }
+            });
+        });
+    });
+
+
+
+
+</script>
 

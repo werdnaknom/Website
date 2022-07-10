@@ -179,3 +179,11 @@ class MongoDatabaseFunctions(DatabaseFunctions):
             ch_result = mongo.db[Config.CAPTURE].aggregate(ch_pipeline)
             channel_results.extend(list(ch_result))
         return temperature_result, channel_results
+
+    @staticmethod
+    def get_runid_capture_waveforms(runid: str, temperatures: list[int], voltages, test_category: str):
+        captures = mongo.db[Config.CAPTURE].find({"runid": runid})
+        print(captures)
+        for capture in captures:
+            print(capture["_id"])
+        return captures

@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/stylesheets/custom.css') }}">
     {% block theme %}{% endblock %}
     <!-- Disable unused skin immediately -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+    <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"> </script>
     <script>
       var skin = localStorage.getItem('skin') || 'default';
       var unusedLink = document.querySelector('link[data-skin]:not([data-skin="'+ skin +'"])');
@@ -80,11 +82,14 @@
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- BEGIN BASE JS -->
-<script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
+<!--
+<script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"> </script>
+-->
 <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/popper.min.js') }}"></script>
 <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-
-
+<!-- Bootstrap Javascripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>-->
 <!-- END BASE JS -->
 
 <!-- BEGIN PLUGINS JS -->

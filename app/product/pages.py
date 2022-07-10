@@ -79,7 +79,7 @@ class RunidPage(FlaskPage):
 
     def get_technician(self) -> str:
         technician = self.entity.testrun.technician
-        if technician is not "":
+        if technician != "":
             return technician.title()
         else:
             return "Test Runner"
@@ -96,7 +96,6 @@ class RunidPage(FlaskPage):
         test_categories = self._get_distinct_test_categories()
         display_str = ", ".join(test_categories)
         return display_str
-
 
     def get_if_waveforms(self, test_category=None) -> bool:
         if test_category:
