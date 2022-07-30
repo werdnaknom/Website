@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-bp = Blueprint('upload', __name__)
+bp = Blueprint('display', __name__)
 
 from app.display_images import routes

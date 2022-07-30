@@ -156,7 +156,8 @@ class MongoDatabaseFunctions(DatabaseFunctions):
 
         ]
         # print(temperature_pipeline)
-        temperature_result = list(mongo.db[Config.CAPTURE].aggregate(temperature_pipeline))
+        temperature_result = list(mongo.db[Config.CAPTURE].aggregate(temperature_pipeline))[0]
+        temperature_list = temperature_result["temperatures"]
         channel_results = []
 
         for channel in [0, 1, 2, 3]:
@@ -178,7 +179,7 @@ class MongoDatabaseFunctions(DatabaseFunctions):
             # print(ch_pipeline)
             ch_result = mongo.db[Config.CAPTURE].aggregate(ch_pipeline)
             channel_results.extend(list(ch_result))
-        return temperature_result, channel_results
+        return temperature_list, channel_results
 
     @staticmethod
     def get_runid_capture_waveforms(runid: str, temperatures: list[int], voltages, test_category: str):
@@ -187,3 +188,66 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         for capture in captures:
             print(capture["_id"])
         return captures
+
+    @staticmethod
+    def get_waveforms_by_runid(runid: int):
+        print("RUNID: ", runid)
+        waveforms = mongo.db[Config.WAVEFORM].find({"runid": runid}, {'downsample': 1, "_id": 0})
+        return waveforms
+
+    @staticmethod
+    def get_waveforms_by_captures(runid: int, capture_list: t.List[int]):
+        waveforms = mongo.db[Config.WAVEFORM].find({"runid": runid, "capture": {"$in": capture_list}},
+                                                   {"downsample": 1, "_id": 0})
+        return waveforms
+
+    @staticmethod
+    def get_waveforms_for_aux_to_main_graph(runid: int, temperatures: t.List[int], voltages: t.Dict,
+                                            scope_channels: t.List[int]) -> t.List:
+        CAPTURE_LIST = "captures"
+        match_dict = {
+            "runid": runid,
+            "environment.chamber_setpoint": {"$in": temperatures},
+        }
+        for ch, voltage_list in voltages.items():
+            if voltage_list:
+                key_str = f"environment.power_supply_channels.{ch}.voltage_setpoint".format(ch)
+                search_str = {"$in": voltage_list}
+                match_dict[key_str] = search_str
+        capture_pipeline = [
+            {"$match": match_dict},
+            {"$group":
+                 {"_id": {"runids": "$runid"},
+                  CAPTURE_LIST: {"$addToSet": "$capture"}}
+             }]
+        # print(capture_pipeline)
+        captures_cursor = mongo.db[Config.CAPTURE].aggregate(capture_pipeline)
+        captures = list(captures_cursor)[0][CAPTURE_LIST]
+
+        waveforms = MongoDatabaseFunctions.get_waveforms_by_captures(runid=runid, capture_list=captures)
+
+        return waveforms
+
+    @staticmethod
+    def get_runid_capture_image_and_information(runid: str, capture: int):
+        # TODO:: Not finished
+        runid = int(runid[3:])
+        capture = list(mongo.db[Config.CAPTURE].find({"runid": runid, "capture": capture},
+                                                     {"waveform_names": 1, "environment": 1, "capture_image": 1, }))
+        return capture
+
+    @staticmethod
+    def get_runid_images_for_grid(runid: str):
+        runid = int(runid[3:])
+        pipeline = [
+            {"$match": {"runid": runid}},
+            {"$group": {"_id": {"test": "$test_category"},
+                        # "images": {"$addToSet": "$capture_image.path_str"},
+                        "all": {"$push": {
+                            "capture_id": "$_id",
+                            "image": "$capture_image.path_str",
+                            "environment": "$environment"
+                        }}}},
+        ]
+        result = mongo.db[Config.CAPTURE].aggregate(pipeline)
+        return list(result)

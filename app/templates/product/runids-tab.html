@@ -29,6 +29,13 @@
                     formaction="/products/runids/runids_ajax">View Data
             </button>
         </td>
+        <td>
+            <form action="/dash/runid_viewimage_grid/{{runid._id}}">
+                <button type="submit" class="runidimage btn btn-success">
+                    Scope Image
+                </button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
     </tbody>
@@ -70,6 +77,17 @@
             });
         });
     });
+
+
+
+
+
+
+
+
+
+
+
 
 
 

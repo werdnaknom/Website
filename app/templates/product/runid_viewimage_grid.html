@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/flatpickr/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<!-- .page -->
+<div class="page has-sidebar has-sidebar-expand-xl">
+    <!-- .page-inner -->
+    <div class="page-inner">
+        <!-- .page-title-bar -->
+        <header class="page-title-bar">
+            <!-- .d-flex -->
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- .breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active">
+                            <a href="{{ url_for('product.product', product=product) }}">
+                                <i class="breadcrumb-icon fa fa-angle-left mr-2"></i>{{product}}
+                            </a>
+                        </li>
+                    </ol>
+                </nav>
+                <!-- /.breadcrumb -->
+
+                <button type="button" class="btn btn-light btn-icon d-xl-none" data-toggle="sidebar"><i
+                        class="fa fa-angle-double-left"></i></button>
+            </div>
+            <!-- /.d-flex -->
+
+            <!-- grid row -->
+            <div class="row text-center text-sm-left">
+                <!-- grid column -->
+                <div class="col-sm-auto col-12 mb-2">
+                    <!-- .has-badge -->
+                    <div class="has-badge has-badge-bottom">
+                        <a href="#" class="user-avatar user-avatar-xl">
+                            <img src="{{ url_for('static', filename='assets/images/products/nic.png') }}" alt="">
+                        </a>
+                        <span class="tile tile-circle tile-xs" data-toggle="tooltip" title="Public"><i
+                                class="fas fa-globe"></i></span>
+                    </div>
+                    <!-- /.has-badge -->
+                </div>
+                <!-- /grid column -->
+                <!-- grid column -->
+                <div class="col">
+                    <h1 class="page-title">{{ title }}</h1>
+                    <!-- <p class="text-muted"> This is a description! </p> -->
+                </div>
+                <!-- /grid column -->
+            </div>
+            <!-- /grid row -->
+        </header>
+        <!-- /.page-title-bar -->
+    </div>
+    <div class="container">
+        <div class="container">
+            {% for test in tests %}
+            <h1 class="page-title">{{test["_id"]["test"]}}</h1>
+            {% for image_batch in test["all"]|batch(3) %}
+            <div class="row">
+                {% for capture in image_batch %}
+                <div class="col border">
+                    <div class="text-center">
+                        <!--<img src="{{ url_for('display.load_image', filename=capture['image'])}}" class="img-thumbnail" alt="Responsive image">-->
+                        <a href="{{ url_for('product.product', product=product) }}">
+                        <img id={{capture['capture_id']}}
+                             src="{{ url_for('display.load_image', filename='C:/Users/monke/Desktop/depositphotos_28192573-stock-photo-fake-stamp.jpg')}}"
+                             class="img-thumbnail" alt="Responsive image">
+                        </a>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tr>
+                                <td>Temperature</td>
+                                <td>{{capture['environment']['chamber_setpoint']}}C</td>
+                            </tr>
+                            {% for voltage_ch in capture['environment']['power_supply_channels'].values() %}
+                            {% if voltage_ch['channel_on'] %}
+                            <tr>
+                                <td>
+                                    {{voltage_ch["channel_name"]}} ({{voltage_ch['group']}})
+                                </td>
+                                <td>
+                                    {{voltage_ch["voltage_setpoint"]}}V
+                                </td>
+                            </tr>
+
+                            {% endif %}
+                            {% endfor %}
+
+
+                        </table>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <br>
+            {% endfor %}
+        </div>
+
+        {% endfor %}
+    </div>
+    <!-- /.page -->
+</div>
+
+{% endblock %}
+
+
+{% block plugin_js %} {% endblock %}
+
+{% block page_js %} {% endblock %}

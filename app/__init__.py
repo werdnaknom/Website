@@ -49,7 +49,6 @@ def create_app(config_class=Config):
     mongo.init_app(app)
     print(config_class.MONGO_URI, config_class.MONGO_DBNAME)
 
-
     # Configure Celery
     celeryapp = init_celery(app)
 
@@ -57,6 +56,9 @@ def create_app(config_class=Config):
     # db = get_database(app, config_class)
 
     csrf = CSRFProtect(app)
+
+    from app.display_images import bp as display_bp
+    app.register_blueprint(display_bp)
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
@@ -108,7 +110,7 @@ def create_app(config_class=Config):
     app.register_blueprint(vsd_bp, url_prefix="/VoltageSystemDynamics")
 
     ''' DASH '''
-    from .plotlydash.runid_viewdata import init_dash
+    from .plotlydash.dash_setup import init_dash
     app = init_dash(app)
     csrf._exempt_views.add('dash.dash.dispatch')
     ''' END test post processing '''

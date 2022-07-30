@@ -258,6 +258,14 @@ def runid_overview(runid):
                            page=page)
 
 
+@bp.route('/products/<product>/runids/viewimage_grid/<runid>')
+def runid_viewimage_grid(product, runid):
+    tests = MongoDatabaseFunctions.get_runid_images_for_grid(runid=runid)
+
+    return render_template('product/runid_viewimage_grid.html', title="{0} Runid {1}".format(product, runid),
+                           product=product, tests=tests)
+
+
 @bp.route('/products/runids/runid_overview_ajax', methods=('GET', 'POST'))
 def runid_overview_ajax():
     if request.method == "POST":
@@ -397,5 +405,6 @@ def runid_overview_ajax():
                                          status=status,
                                          status_info=status_info,
                                          comments=comments,
-                                         tests_run=tests_run_str
+                                         tests_run=tests_run_str,
+                                         runid=runid[3:]
                                          )})

@@ -73,8 +73,8 @@ class Config(object):
 
     # DATABASE SETUP
     DATABASE = "MONGODB"
-    #DATABASE = "PICKLEDB"
-    #DATABASE = "DIRECTORYDB"
+    # DATABASE = "PICKLEDB"
+    # DATABASE = "DIRECTORYDB"
 
     # MONGODB SETUP
     MONGO_DBNAME = "ATS2"
@@ -177,6 +177,7 @@ class Config(object):
     REWORK = "REWORK"
     RUNID = "RUNID"
     CAPTURE = "DATACAPTURE"
+    WAVEFORM = "WAVEFORM"
 
 
 class DeploymentConfig(Config):
