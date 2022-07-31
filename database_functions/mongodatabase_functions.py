@@ -182,11 +182,13 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         return temperature_list, channel_results
 
     @staticmethod
-    def get_runid_capture_waveforms(runid: str, temperatures: list[int], voltages, test_category: str):
+    def get_runid_capture_waveforms(runid: str, temperatures: t.List[int], voltages, test_category: str):
         captures = mongo.db[Config.CAPTURE].find({"runid": runid})
+        '''
         print(captures)
         for capture in captures:
             print(capture["_id"])
+        '''
         return captures
 
     @staticmethod
