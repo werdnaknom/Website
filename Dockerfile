@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir gunicorn
 
 COPY app app
+COPY database_functions database_functions
 COPY flaskweb.py config.py boot.sh celery_worker.py ./
 RUN chmod +x boot.sh
 
