@@ -8,6 +8,8 @@ from dash import callback_context
 
 from database_functions.mongodatabase_functions import MongoDatabaseFunctions
 
+dash_app = dash.get_app()
+
 dash.register_page(__name__,
                    path_template='/runid_viewimage/<runid>',
                    title="View Runid Image",
@@ -29,7 +31,7 @@ def layout(runid: int = None):
     return layout
 
 
-@dash.get_app().callback(Output("capture_number", "data"),
+@dash_app.callback(Output("capture_number", "data"),
                          # Output("image", "src"),
                          Input("previous_button", "n_clicks"),
                          Input("next_button", "n_clicks"),
@@ -52,7 +54,7 @@ def update_capture_number(next_button, previous_button, number):
         return number
 
 
-@dash.get_app().callback(Output("image", "children"),
+@dash_app.callback(Output("image", "children"),
                          Input("capture_number", "data"),
                          State("runid", "data"))
 def update_image_src(capture_number, runid):
