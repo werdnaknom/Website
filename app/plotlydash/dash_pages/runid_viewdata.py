@@ -20,6 +20,8 @@ TEST_SELECTION_DROPDOWN = "test_selection_dropdown"
 TEST_CONTENT_DIV = "test_content_div"
 PAGE_CONTENT_DIV = "page_content_div"
 
+dash_app = dash.get_app()
+
 dash.register_page(__name__,
                    path_template='/runid_viewdata/<runid>',
                    title="View Runid Data",
@@ -161,7 +163,7 @@ def ethagent_content(test_category, test_parameters):
     return [f"no content for ethagent"]
 
 
-@dash.get_app().callback(Output(INPUT_VOLTAGE_DIV, "hidden"),
+@dash_app.callback(Output(INPUT_VOLTAGE_DIV, "hidden"),
                          Output(TEMPERATURE_DIV, "hidden"),
                          Input(TEST_SELECTION_DROPDOWN, "value"))
 def test_category_selected(test_category):
@@ -176,7 +178,7 @@ def test_category_selected(test_category):
         return False, False
 
 
-@dash.get_app().callback(Output(PAGE_CONTENT_DIV, "hidden"),
+@dash_app.callback(Output(PAGE_CONTENT_DIV, "hidden"),
                          Output(TEST_CONTENT_DIV, "children"),
                          Input(TEST_SELECTION_DROPDOWN, "value"),
                          Input(TEMPERATURE_DROPDOWN, "value"),
