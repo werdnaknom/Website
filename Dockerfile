@@ -1,7 +1,7 @@
 FROM python:3.8
 
-#ENV HTTP_PROXY "http://proxy.jf.intel.com:911"
-#ENV HTTPS_PROXY "http://proxy.jf.intel.com:911"
+ENV HTTP_PROXY "http://proxy.jf.intel.com:912"
+ENV HTTPS_PROXY "http://proxy.jf.intel.com:912"
 
 RUN adduser --disabled-password flaskweb
 WORKDIR /home/flaskweb
