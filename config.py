@@ -9,8 +9,8 @@ EntityBuilders Structure:
     Product, SpeedAssembly, Rework, Submission, Runid, TestCategory, Capture, Waveform
 """
 
-DATADIRECTORY = r'\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0'
-PICKLEDIRECTORY = r'\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0_pickle'
+DATADIRECTORY = os.getenv("OR_ATS_DIRECTORY") or r'\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0'
+PICKLEDIRECTORY = os.getenv("PICKLEDIRECTORY") or r'\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0_pickle'
 
 REPOSITORYFILTER = 'dut'
 PRODUCTFILTERS = ["dut"]
@@ -77,7 +77,7 @@ class Config(object):
     # DATABASE = "DIRECTORYDB"
 
     # MONGODB SETUP
-    MONGO_DBNAME = "ATS2"
+    MONGO_DBNAME = os.getenv("MONGO_DATABASE_NAME") or "ATS2"
     MONGO_URI = os.environ.get("MONGO_URI") or "mongodb://192.168.1.226:27017" + "/" + MONGO_DBNAME
 
     # BACKEND SETUP
