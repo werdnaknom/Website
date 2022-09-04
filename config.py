@@ -79,6 +79,8 @@ class Config(object):
     # MONGODB SETUP
     MONGO_DBNAME = os.getenv("MONGO_DATABASE_NAME") or "ATS2"
     MONGO_URI = os.environ.get("MONGO_URI") or "mongodb://192.168.1.226:27017" + "/" + MONGO_DBNAME
+    print("Database Name: ", os.getenv("MONGO_DATABASE_NAME"))
+    print("MONGO_URL: ", os.getenv("MONGO_URI"))
 
     # BACKEND SETUP
     BACKEND_DOCKER = os.environ.get("BACKEND_DOCKER_NAME")

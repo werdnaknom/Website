@@ -119,6 +119,11 @@ def create_app(config_class=Config):
     from .post_processing.task_pages import bp as task_bp
     app.register_blueprint(task_bp, url_prefix="/Celery")
 
+    ''' API '''
+    from .api import bp as api_bp
+    app.register_blueprint(api_bp)
+    csrf.exempt(api_bp)
+
     @app.context_processor
     def utility_processor():
         def get_product_names():
@@ -148,5 +153,7 @@ def create_app(config_class=Config):
 
         return dict(product_names=get_product_names,
                     product_update_times=get_product_update_times)
+
+    print(config_class)
 
     return app
