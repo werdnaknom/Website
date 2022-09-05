@@ -1,0 +1,55 @@
+<form method="post">
+    <div class="form-group">
+        {{voltage_form.hidden_tag()}}
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.product.label}}: </label>
+        {{voltage_form.product(value=product,data=product, readonly=true)}}
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.testpoint.label}}: </label>
+        {{voltage_form.testpoint(value=testpoint,data=testpoint, readonly=true)}}
+    </div>
+    <div class="form-group">
+        {{voltage_form.edge_rail}}
+        <label>{{voltage_form.edge_rail.label}}</label>
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.nominal_voltage.label}}</label>
+        {{voltage_form.nominal_voltage}}
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.spec_min.label}}</label>
+        {{voltage_form.spec_min}}
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.spec_max.label}}</label>
+        {{voltage_form.spec_max}}
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.bandwidth.label}}</label>
+        {{voltage_form.bandwidth}}
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.max_poweron_time.label}}</label>
+        {{voltage_form.max_poweron_time}}
+    </div>
+    <div class="form-group">
+        <label>{{voltage_form.valid_voltage.label}}</label>
+        {{voltage_form.valid_voltage}}
+    </div>
+    <div class="form-group">
+        {{voltage_form.submit}}
+    </div>
+
+</form>
+
+{% if voltage_form.errors %}
+<ul class="errors">
+    {% for field_name, field_errors in voltage_form.errors|dictsort if field_errors %}
+    {% for error in field_errors %}
+    <li>{{ voltage_form[field_name].label }}: {{ error }}</li>
+    {% endfor %}
+    {% endfor %}
+</ul>
+{% endif %}

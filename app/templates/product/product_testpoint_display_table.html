@@ -1,0 +1,24 @@
+<table class="table table-hover">
+    {% for testpoint in testpoints %}
+    <tr class="borders">
+        <td>
+            <a class="testpointinfo btn btn-primary" data-toggle="collapse" href="#collapse-{{testpoint}}"
+               role="button"
+               aria-controls="collapse" data-id="{{testpoint}}" data-product="{{product.descriptor}}">
+                Expand
+            </a>
+        </td>
+        <td> {{testpoint}}</td>
+    </tr>
+    <tr>
+        <td>
+            <div class="collapse" id="collapse-{{testpoint}}">
+                <div class="card card-body" id="{{testpoint}}-div">
+                </div>
+            </div>
+        </td>
+    </tr>
+
+
+    {% endfor %}
+</table>

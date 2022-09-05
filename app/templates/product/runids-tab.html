@@ -30,12 +30,11 @@
             </button>
         </td>
         <td>
-            <form action="/dash/runid_viewimage_grid/{{runid._id}}">
+            <a href="{{url_for('product.runid_viewimage_grid', product=product.descriptor, runid=runid._id)}}">
                 <button type="submit" class="runidimage btn btn-success">
-                    Scope Image
+                    Scope Images
                 </button>
-            </form>
-        </td>
+            </a>
     </tr>
     {% endfor %}
     </tbody>
@@ -77,20 +76,5 @@
             });
         });
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
 

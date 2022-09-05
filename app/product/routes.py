@@ -9,6 +9,7 @@ from io import BytesIO
 import datetime
 
 from database_functions.mongodatabase_functions import MongoDatabaseFunctions
+from .forms import Testpoint_Voltage_Form
 
 
 @dataclass
@@ -61,6 +62,14 @@ def get_runid_entities_by_product(product: str) -> t.List[ReworkEntity]:
     return runid_entities
 
 
+def get_waveform_testpoints_by_product(product: str):
+    waveform_testpoints = MongoDatabaseFunctions.get_runid_waveform_names_by_product(product=product)
+    testpoint_entities = MongoDatabaseFunctions.get_testpoints_by_product(product=product)
+    for testpoint in testpoint_entities:
+        waveform_testpoints.remove(testpoint["testpoint"])
+    return testpoint_entities, waveform_testpoints
+
+
 def get_capture_entities_by_product(product: str) -> t.List[ReworkEntity]:
     capture_entities = []
     capture_dicts = MongoDatabaseFunctions.find_waveform_capture_entities_by_product(product)
@@ -99,7 +108,7 @@ def get_runid_voltage_channel(runid: str, channel: str) -> t.List:
     return r
 
 
-@bp.route('/products/<product>')
+@bp.route('/products/<product>', methods=("GET", "POST"))
 def product(product):
     '''
     s = requests.Session()
@@ -108,12 +117,35 @@ def product(product):
     r = s.get(current_app.config["DATABASE"] + 'list', json=json_filter)
     product_dict = r.json()[0]
     '''
+    testpoint_form = Testpoint_Voltage_Form()
+    if testpoint_form.validate_on_submit():
+        product = testpoint_form.product.data
+        testpoint = testpoint_form.testpoint.data
+        edge_rail = testpoint_form.edge_rail.data
+        nominal_value = float(testpoint_form.nominal_voltage.data)
+        spec_min = float(testpoint_form.spec_min.data)
+        spec_max = float(testpoint_form.spec_max.data)
+        bandwidth = float(testpoint_form.bandwidth.data)
+        max_poweron_time = float(testpoint_form.max_poweron_time.data)
+        valid_voltage = float(testpoint_form.valid_voltage.data)
+        current_rail = False
+        associated_rail = ""
+
+        MongoDatabaseFunctions.insert_testpoint_metrics(product=product, testpoint=testpoint, edge_rail=edge_rail,
+                                                        nominal_voltage=nominal_value, spec_max=spec_max,
+                                                        spec_min=spec_min, bandwidth=bandwidth,
+                                                        valid_voltage=valid_voltage,
+                                                        max_poweron_time=max_poweron_time, current_rail=current_rail,
+                                                        associated_rail=associated_rail)
+    else:
+        print(testpoint_form.errors)
     product_dict = MongoDatabaseFunctions.find_product(product=product)
     # print(product_dict)
     product_entity = ProjectEntity.from_dict(product_dict)
     pbas = get_pba_entities_by_product(product)
     reworks = get_rework_entities_by_product(product)
     runids = get_runid_entities_by_product(product)
+    testpoint_entities, raw_testpoints = get_waveform_testpoints_by_product(product)
 
     # print(product_entity.tests_unique)
     return render_template('/product/product.html',
@@ -122,6 +154,9 @@ def product(product):
                            pbas=pbas,
                            reworks=reworks,
                            runids=runids,
+                           testpoint_entities=testpoint_entities,
+                           raw_testpoints=raw_testpoints,
+                           testpoint_form=testpoint_form,
                            description="This is a description")
 
 
@@ -266,145 +301,87 @@ def runid_viewimage_grid(product, runid):
                            product=product, tests=tests)
 
 
+@bp.route('/products/runids/product_testpoint_overview_ajax', methods=('GET', 'POST'))
+def product_testpoint_overview_ajax():
+    if request.method == "POST":
+        testpoint = request.form["testpoint"]
+        product = request.form["product"]
+        print(testpoint, product)
+        return jsonify({'htmlresponse': render_template('product/testpoint_overview.html')})
+
+
+@bp.route('/products/testpoint/add_testpoint_ajax', methods=('GET', 'POST'))
+def product_add_testpoint_ajax():
+    if request.method == "POST":
+        testpoint = request.form["testpoint"]
+        product = request.form["product"]
+        print(testpoint, product)
+        voltage_form = Testpoint_Voltage_Form()
+        return jsonify({'htmlresponse': render_template('product/create_product_testpoint.html',
+                                                        voltage_form=voltage_form,
+                                                        product=product,
+                                                        testpoint=testpoint)})
+
+
 @bp.route('/products/runids/runid_overview_ajax', methods=('GET', 'POST'))
 def runid_overview_ajax():
     if request.method == "POST":
         # TODO:: Get this data dynamically
         runid = request.form["runid"]
         runid_request = MongoDatabaseFunctions.find_runid_by_id(runid)
-        system_info_json = runid_request['system_info']
-        probes = system_info_json['probes']
-        ats_version = system_info_json['ats_version']
-        location = "OR"
-        project = "Island Rapids"
-        pba = "K87758-002"
-        rework = 0
-        serial = "894DA0"
-        status = "Complete"
-        status_info = "Test was aborted by user after 3 Hours 18 Minutes 53 Seconds"
-        probes = [
-            {
-                "channel": 1,
-                "part_number": "TDP1000",
-                "serial_number": "B040055",
-                "units": "V",
-                "cal_status": "D",
-                "dynamic_range": 8.5,
-                "deguass": True
-            },
-            {
-                "channel": 2,
-                "part_number": "TCP0030A",
-                "serial_number": "C005015",
-                "units": "A",
-                "cal_status": "D",
-                "dynamic_range": 100,
-                "deguass": True
-            },
-            {
-                "channel": 3,
-                "part_number": "TDP1000",
-                "serial_number": "B040025",
-                "units": "V",
-                "cal_status": "D",
-                "dynamic_range": 84,
-                "deguass": True
+        # RUNID INFO
+        pba = runid_request.get("pba", "")
+        rework = runid_request.get("rework", -9999)
+        serial = runid_request.get("serial", "")
 
-            },
-            {
-                "channel": 4,
-                "part_number": "TCP0030A",
-                "serial_number": "C003949",
-                "units": "A",
-                "cal_status": "D",
-                "dynamic_range": 100,
-                "deguass": True
-            },
-            {
-                "channel": 5,
-                "part_number": "TDP1000",
-                "serial_number": "B040051",
-                "units": "V",
-                "cal_status": "D",
-                "dynamic_range": 8.5,
-                "deguass": True
-            },
-            {
-                "channel": 6,
-                "part_number": "TDP1000",
-                "serial_number": "B040097",
-                "units": "V",
-                "cal_status": "D",
-                "dynamic_range": 8.5,
-                "deguass": True
-            },
-            {
-                "channel": 7,
-                "part_number": "TDP1000",
-                "serial_number": "B040050",
-                "units": "V",
-                "cal_status": "D",
-                "dynamic_range": 8.5,
-                "deguass": True
-            },
-            {
-                "channel": 8,
-                "part_number": "TDP1000",
-                "serial_number": "B040101",
-                "units": "V",
-                "cal_status": "D",
-                "dynamic_range": 8.5,
-                "deguass": True
-            }
-        ]
-    ats_version = "ATS 2.0 Alpha 25_19E77"
-    technician = "phyllis sanderson"
-    test_station = "LNO-TEST9"
-    configuration = "4"
-    board_id = 2401
-    test_points = {
-        "0": "3P3V_AUX",
-        "1": "3P3V_AUX_CURRENT",
-        "2": "12V_MAIN",
-        "3": "12V_CURRENT",
-        "4": "3P3V",
-        "5": "1P8_VDDH_CVL1",
-        "6": "1P8_VDDH_CVL2",
-        "7": "1P1V_VDDH"
-    }
-    for tp in test_points.keys():
-        probes[int(tp)]["Name"] = test_points[tp]
+        # STATUS INFO
+        status_json = runid_request.get("status", {})
+        status = status_json.get("status", "")
+        status_info = status_json.get("info", "")
 
-    comments = "start up config 4"
+        # COMMENT INFO
+        comment_json = runid_request.get("comments", {})
+        comments = comment_json.get("comments", "")
 
-    # return jsonify({'htmlresponse': render_template('product/runid_overview.html', modal_runid=runid_request)})
+        # SYSTEM INFO
+        system_info_json = runid_request.get('system_info', {})
+        probes = system_info_json.get('probes', [])
+        ats_version = system_info_json.get('ats_version', "")
 
-    tests_run = MongoDatabaseFunctions.get_runid_test_categories(runid=runid_request["runid"])
-    tests_run_str = ", ".join(tests_run)
+        # TESTRUN
+        testrun_json = runid_request.get('testrun', {})
+        test_points = testrun_json.get("test_points", {})
+        technician = testrun_json.get("technician", "")
+        test_station = testrun_json.get("test_station", "")
+        configuration = testrun_json.get("configuration", "")
+        board_id = testrun_json.get("board_id", -9999)
 
-    # print(runid_request["runid"])
-    temperatures, voltages = MongoDatabaseFunctions.get_runid_capture_data(runid=runid_request["runid"])
-    # print(temperatures)
-    # print(voltages)
-    for l in voltages:
-        print("--------------")
-        for key in l.keys():
-            print(key, l[key])
-    return jsonify(
-        {'htmlresponse': render_template('product/runid_overview_with_dash.html',
-                                         probes=probes,
-                                         test_points=test_points,
-                                         ats_version=ats_version,
-                                         technician=technician.title(),
-                                         test_station=test_station,
-                                         configuration=configuration,
-                                         board_id=board_id,
-                                         pba=pba,
-                                         serial_number=serial,
-                                         rework=rework,
-                                         status=status,
-                                         status_info=status_info,
-                                         comments=comments,
-                                         tests_run=tests_run_str,
-                                         runid=runid[3:]
-                                         )})
+        for tp in test_points.keys():
+            probes[int(tp)]["Name"] = test_points[tp]
+
+        tests_run = MongoDatabaseFunctions.get_runid_test_categories(runid=runid_request["runid"])
+        tests_run_str = ", ".join(tests_run)
+
+        temperatures, voltages = MongoDatabaseFunctions.get_runid_capture_data(runid=runid_request["runid"])
+        for l in voltages:
+            print("--------------")
+            for key in l.keys():
+                print(key, l[key])
+        return jsonify(
+            {'htmlresponse': render_template('product/runid_overview_with_dash.html',
+                                             probes=probes,
+                                             test_points=test_points,
+                                             ats_version=ats_version,
+                                             technician=technician.title(),
+                                             test_station=test_station,
+                                             configuration=configuration,
+                                             board_id=board_id,
+                                             pba=pba,
+                                             serial_number=serial,
+                                             rework=rework,
+                                             status=status,
+                                             status_info=status_info,
+                                             comments=comments,
+                                             tests_run=tests_run_str,
+                                             runid=runid[3:]
+                                             )})

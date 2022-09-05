@@ -180,6 +180,7 @@ class Config(object):
     RUNID = "RUNID"
     CAPTURE = "DATACAPTURE"
     WAVEFORM = "WAVEFORM"
+    TESTPOINT = "TESTPOINT"
 
 
 class DeploymentConfig(Config):

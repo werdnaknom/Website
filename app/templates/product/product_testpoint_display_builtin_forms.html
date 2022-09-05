@@ -1,0 +1,47 @@
+{% for testpoint in testpoints %}
+<div class="card card-body">
+    <div class="section-deck">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-1">
+                    <h1 class="section-title mb-0">{{testpoint}}</h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <form method="POST">
+                    {{ testpoint_form.csrf_token }}
+                    {{testpoint_form.edge_rail.label}}: {{ testpoint_form.edge_rail }}
+                    {{testpoint_form.nominal_voltage.label}}: {{ testpoint_form.nominal_voltage }}
+                    {{testpoint_form.spec_min.label}}: {{ testpoint_form.spec_min }}
+                    {{testpoint_form.spec_max.label}}: {{ testpoint_form.spec_max }}
+                    {{testpoint_form.bandwidth.label}}: {{ testpoint_form.bandwidth }}
+                    {{testpoint_form.max_poweron_time.label}}: {{ testpoint_form.max_poweron_time }}
+                    {{testpoint_form.valid_voltage.label}}: {{ testpoint_form.valid_voltage }}
+
+                    <input type="submit" value="Go">
+                </form>
+            </div>
+            <div class="row">
+                <div class="collapse" id="collapse-{{testpoint}}">
+                    <div class="card card-body" id="{{testpoint}}-div">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-1">
+                    <a class="testpointinfo btn btn-primary mb-0" data-toggle="collapse" href="#collapse-{{testpoint}}"
+                       role="button" aria-controls="collapse" data-id="{{testpoint}}"
+                       data-product="{{product.descriptor}}">
+                        Expand
+                    </a>
+                </div>
+                <div class="col-1">
+                    <a class="btn btn-primary" href=""> View Data </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

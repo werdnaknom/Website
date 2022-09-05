@@ -3,6 +3,7 @@ import typing as t
 from database_functions.database_functions import DatabaseFunctions
 from config import Config
 from app.extensions import mongo
+from Entities.Entities import TestpointEntity
 
 
 class MongoDatabaseFunctions(DatabaseFunctions):
@@ -79,7 +80,7 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         return r
 
     @staticmethod
-    def find_runid_by_id(id: str) -> t.List[t.Dict]:
+    def find_runid_by_id(id: str) -> t.Dict:
         result = mongo.db[Config.RUNID].find_one({"_id": id})
         return result
 
@@ -156,8 +157,12 @@ class MongoDatabaseFunctions(DatabaseFunctions):
 
         ]
         # print(temperature_pipeline)
-        temperature_result = list(mongo.db[Config.CAPTURE].aggregate(temperature_pipeline))[0]
-        temperature_list = temperature_result["temperatures"]
+        temperature_result = list(mongo.db[Config.CAPTURE].aggregate(temperature_pipeline))
+        if len(temperature_result) == 0:
+            temperature_list = []
+        else:
+            temperature_result = temperature_result[0]
+            temperature_list = temperature_result["temperatures"]
         channel_results = []
 
         for channel in [0, 1, 2, 3]:
@@ -240,6 +245,7 @@ class MongoDatabaseFunctions(DatabaseFunctions):
 
     @staticmethod
     def get_runid_images_for_grid(runid: str):
+        # TODO:: Make it so runids aren't ints
         runid = int(runid[3:])
         pipeline = [
             {"$match": {"runid": runid}},
@@ -253,3 +259,99 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         ]
         result = mongo.db[Config.CAPTURE].aggregate(pipeline)
         return list(result)
+
+    @staticmethod
+    def get_waveform_names_by_product(product: str, runid: str = None) -> t.List[str]:
+        # TODO:: THIS HASN'T BEEN VERIFIED AT ALL
+        pipeline = [
+            {"$match": {"project": product}},
+            {"$lookup": {
+                "from": Config.WAVEFORM,
+                # "localField": "runid",
+                # "foreignField": "runid",
+                "let": {"id": "$runid"},
+                "as": "waveforms",
+                "pipeline": [
+                    {"$match": {"$expr": {"$eq": ["$runid", "$$id"]}}},
+                    {"$project": {"testpoint": 1, "_id": 0}}
+                ],
+            }},
+            {"$project": {"waveforms": 1, "runid": 1, "_id": 0}}
+
+        ]
+        cursor = mongo.db[Config.RUNID].aggregate(pipeline)
+        testpoint_set = set()
+        for runid_dict in cursor:
+            print(runid_dict)
+            testpoints = runid_dict["_id"]["waveforms"]
+            # testpoints.add(runid_dict["_id"]["waveforms"])
+            print(testpoint_set.update(testpoints))
+        result = list(testpoint_set)
+        result.sort()
+        return result
+
+    @staticmethod
+    def get_runid_waveform_names_by_product(product: str, runid: str = None) -> t.List[str]:
+        pipeline = [
+            {"$match": {"project": product}},
+            # {"$group": {"_id": "$testrun.testpoints"}},
+            # {"$addFields": {"waveforms": {"$objectToArray": "$testrun.test_points"}}},
+            {"$addFields": {"waveforms": {"$objectToArray": "$testrun.test_points"}}},
+            {"$project": {"waveforms": 1, "runid": 1, "_id": 0}},
+            # {"$unwind": "$waveforms"}
+            {"$group": {
+                "_id": {"waveforms": "$waveforms.v"},
+            }}
+
+        ]
+        cursor = mongo.db[Config.RUNID].aggregate(pipeline)
+        testpoint_set = set()
+        for runid_dict in cursor:
+            testpoints = runid_dict["_id"]["waveforms"]
+            # testpoints.add(runid_dict["_id"]["waveforms"])
+            testpoint_set.update(testpoints)
+
+        result = list(testpoint_set)
+        result.sort()
+
+        return result
+
+    @staticmethod
+    def get_testpoints_by_product(product: str):
+        # Returns cursor with dicts
+        return list(mongo.db[Config.TESTPOINT].find({"product": product}))
+
+    @staticmethod
+    def insert_testpoint_metrics(product: str, testpoint: str, edge_rail: bool, nominal_voltage: float,
+                                 spec_min: float, spec_max: float, bandwidth: float, max_poweron_time: float,
+                                 valid_voltage: float, current_rail: bool, associated_rail: str):
+        tpe = TestpointEntity(product=product,
+                              testpoint=testpoint,
+                              nominal_value=nominal_voltage,
+                              min_value=spec_min,
+                              max_value=spec_max,
+                              bandwidth_mhz=bandwidth,
+                              valid_value=valid_voltage,
+                              poweron_time_ms=max_poweron_time,
+                              edge_rail=edge_rail,
+                              current_rail=False,
+                              associated_rail="")
+        if not mongo.db[Config.TESTPOINT].find_one({"_id": tpe.get_id()}):
+            cursor = mongo.db[Config.TESTPOINT].insert_one(tpe.to_mongo())
+            print(cursor)
+
+
+'''
+    @staticmethod
+    def get_testpoint_by_product(testpont: str, product: str):
+        pipeline = [
+            {"$match": {"runid": runid}},
+            {"$group": {"_id": {"test": "$test_category"},
+                        # "images": {"$addToSet": "$capture_image.path_str"},
+                        "all": {"$push": {
+                            "capture_id": "$_id",
+                            "image": "$capture_image.path_str",
+                            "environment": "$environment"
+                        }}}},
+        ]
+'''

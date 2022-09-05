@@ -144,7 +144,7 @@ def sidebar_layout(runid: int) -> html.Div:
 
 
 def aux_to_main_content(test_category, test_parameters):
-    waveforms = MongoDatabaseFunctions.get_waveforms_for_aux_to_main_graph(runid=1014,
+    waveforms = MongoDatabaseFunctions.get_waveforms_for_aux_to_main_graph(runid=2986,
                                                                            temperatures=test_parameters["temperatures"],
                                                                            voltages=test_parameters["voltages"],
                                                                            scope_channels=test_parameters["channels"])

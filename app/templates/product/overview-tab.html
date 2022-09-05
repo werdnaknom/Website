@@ -5,29 +5,60 @@
 
     <!-- .section-block -->
     <div class="section-block d-flex justify-content-between align-items-center my-3">
+        <!--
         <h1 class="section-title mb-0">Test Progress</h1>
-        {% include 'ui/dropdown-datepicker-02.html' %}
-
+        {#{% include 'ui/dropdown-datepicker-02.html' %}#}
+        -->
+        <h1 class="section-title mb-0">Test Points</h1>
     </div>
     <!-- /.section-block -->
 
     <!-- .card -->
     <div class="card card-body">
+       {% include 'product/product_testpoint_display.html' %}
 
+        <!--
         <div class="chartjs">
             <canvas id="canvas-progress"></canvas>
         </div>
+        -->
     </div>
     <!-- /.card -->
 
     <!-- .section-deck -->
     <div class="section-deck">
         <!-- .card -->
+        <!--
         <div class="card card-fluid">
 
         </div>
+        -->
         <!-- /.section-deck -->
     </div>
     <!-- /.page-section -->
 </div>
 <!-- /.page-inner -->
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.testpointinfo').click(function(){
+        console.log(this)
+        var testpoint = $(this).attr('data-id');
+        var product = $(this).attr('data-product');
+        //console.log(testpoint);
+        //console.log(product);
+        $.ajax({
+                url: '/products/runids/product_testpoint_overview_ajax',
+                type:'post',
+                data: {testpoint: testpoint,
+                        product: product},
+                success: function(data){
+                    document.getElementById(testpoint +'-div').innerHTML = data.htmlresponse;
+                }
+            });
+            });
+     });
+
+
+</script>
