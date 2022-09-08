@@ -57,8 +57,11 @@ def get_runid_entities_by_product(product: str) -> t.List[ReworkEntity]:
     runid_entities = []
     runids = MongoDatabaseFunctions.find_runid_entities_by_product(product)
     for runid in runids:
-        runid_entity = RunidEntity.from_dict(runid)
-        runid_entities.append(runid_entity)
+        try:
+            runid_entity = RunidEntity.from_dict(runid)
+            runid_entities.append(runid_entity)
+        except:
+            print(runid)
     return runid_entities
 
 
