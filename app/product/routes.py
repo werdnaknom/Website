@@ -138,7 +138,8 @@ def product(product):
                                                         max_poweron_time=max_poweron_time, current_rail=current_rail,
                                                         associated_rail=associated_rail)
     else:
-        print(testpoint_form.errors)
+        pass
+        # print(testpoint_form.errors)
     product_dict = MongoDatabaseFunctions.find_product(product=product)
     # print(product_dict)
     product_entity = ProjectEntity.from_dict(product_dict)
