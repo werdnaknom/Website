@@ -61,7 +61,7 @@ def get_runid_entities_by_product(product: str) -> t.List[ReworkEntity]:
             runid_entity = RunidEntity.from_dict(runid)
             runid_entities.append(runid_entity)
         except:
-            print(runid)
+            print("FAILED RUNID ENTITY: ", runid)
     return runid_entities
 
 
