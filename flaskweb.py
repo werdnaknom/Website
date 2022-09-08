@@ -4,7 +4,7 @@ from app import create_app
 #DEPLOYMENT CONFIG
 app = create_app(config_class=DeploymentConfig)
 
-globalConfig = DevelopmentConfig
+globalConfig = DeploymentConfig
 
 if __name__ == "__main__":
     #DEVELOPMENT CONFIG
