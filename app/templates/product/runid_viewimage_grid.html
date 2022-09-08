@@ -71,8 +71,9 @@
                 <div class="col border">
                     <div class="text-center">
                         <!--<img src="{{ url_for('display.load_image', filename=capture['image'])}}" class="img-thumbnail" alt="Responsive image">-->
-                        <a href="{{ url_for('product.product', product=product) }}">
-                            <img id={{capture['capture_id']}}
+                        <a href="#" onclick="setModalImage(this)" data-toggle="modal" data-target="#modalCaptureImage"
+                           data-id="{{capture['capture_id']}}">
+                            <img id="{{capture['capture_id']}}_image"
                                  src="{{ url_for('display.load_image', filename=capture['image'])}}"
                                  class="img-thumbnail" alt="{{capture['capture_id']}} Image">
                         </a>
@@ -101,6 +102,8 @@
                         </table>
                     </div>
                 </div>
+
+
                 {% endfor %}
             </div>
             <br>
@@ -112,9 +115,44 @@
     <!-- /.page -->
 </div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="modalCaptureImage" role="dialog" aria-hidden="true" tabindex="-1" aria-labelledby="imageModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="" id="modalimage" class="img-fluid">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 
 {% block plugin_js %} {% endblock %}
 
-{% block page_js %} {% endblock %}
+{% block page_js %}
+
+<script type="text/javascript">
+function setModalImage(el) {
+    //console.log(el);
+    var capture_id = el.getAttribute('data-id');
+    var img_id = '#' + capture_id + '_image';
+    var imgsrc = $(img_id).attr('src');
+    //console.log(capture_id);
+    //console.log(img_id);
+    //console.log(imgsrc);
+    $('#modalimage').attr('src', imgsrc);
+
+}
+</script>
+{% endblock %}
