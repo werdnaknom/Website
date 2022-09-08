@@ -13,10 +13,6 @@ def display_file(filename):
 
 @bp.route('/display/<path:filename>')
 def load_image(filename):
-    print("loading {}".format(filename))
-    filename = filename.replace("\\", "/")
-    print("REAL loading {}".format(filename))
-    p = Path(filename)
-    print(p.exists(), p.resolve())
-    print(Path("//npo/coos").exists(), "NPO COOS")
+    if not Path(filename).exists():
+        filename = filename.replace("\\", "/")
     return send_file(filename, mimetype='image/fig')
