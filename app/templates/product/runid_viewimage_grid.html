@@ -72,9 +72,9 @@
                     <div class="text-center">
                         <!--<img src="{{ url_for('display.load_image', filename=capture['image'])}}" class="img-thumbnail" alt="Responsive image">-->
                         <a href="{{ url_for('product.product', product=product) }}">
-                        <img id={{capture['capture_id']}}
-                             src="{{ url_for('display.load_image', filename='C:/Users/monke/Desktop/depositphotos_28192573-stock-photo-fake-stamp.jpg')}}"
-                             class="img-thumbnail" alt="Responsive image">
+                            <img id={{capture['capture_id']}}
+                                 src="{{ url_for('display.load_image', filename=capture['image'])}}"
+                                 class="img-thumbnail" alt="{{capture['capture_id']}} Image">
                         </a>
                     </div>
                     <div>
