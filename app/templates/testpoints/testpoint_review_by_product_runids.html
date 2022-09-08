@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/flatpickr/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.css') }}">
+{% endblock %}
+
+
+{% block content %}
+
+{% for runid in runid_cursor%}
+{% for test_category in runid['tests'] %}
+<h1> {{runid['runid']}} - {{test_category["_id"]["test_category"]}}</h1>
+<div class="embed-responsive embed-responsive-21by9">
+    <iframe class="embed-responsive-item" src="/dash/runid_viewdata/{{runid['runid']}}"></iframe>
+</div>
+{% endfor %}
+{% endfor %}
+
+
+{% endblock %}
+
+

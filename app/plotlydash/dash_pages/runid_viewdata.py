@@ -19,6 +19,7 @@ TEST_SELECTION_DIV = "test_selection_div"
 TEST_SELECTION_DROPDOWN = "test_selection_dropdown"
 TEST_CONTENT_DIV = "test_content_div"
 PAGE_CONTENT_DIV = "page_content_div"
+RUNID_DIV = "runid_div"
 
 dash_app = dash.get_app()
 
@@ -131,11 +132,13 @@ def test_selection_dropdown(test_categories: t.List) -> html.Div:
 
 def sidebar_layout(runid: int) -> html.Div:
     tests = MongoDatabaseFunctions.get_runid_test_categories(runid=runid)
+    runid_div = html.Div(id=RUNID_DIV, hidden=True, children=runid)
     temperature_result, voltage_groups = MongoDatabaseFunctions.get_runid_capture_data(runid=runid)
     test_layout = test_selection_dropdown(test_categories=tests)
     voltage_layout = input_voltage_dropdown(input_voltage_groups=voltage_groups)
     temperature_layout = temperature_dropdown(temperature_result)
     sidebar = html.Div(id="sidebar_div", children=[
+        runid_div,
         test_layout,
         temperature_layout,
         voltage_layout
@@ -143,8 +146,8 @@ def sidebar_layout(runid: int) -> html.Div:
     return sidebar
 
 
-def aux_to_main_content(test_category, test_parameters):
-    waveforms = MongoDatabaseFunctions.get_waveforms_for_aux_to_main_graph(runid=2986,
+def aux_to_main_content(runid, test_category, test_parameters):
+    waveforms = MongoDatabaseFunctions.get_waveforms_for_aux_to_main_graph(runid=runid,
                                                                            temperatures=test_parameters["temperatures"],
                                                                            voltages=test_parameters["voltages"],
                                                                            scope_channels=test_parameters["channels"])
@@ -164,8 +167,8 @@ def ethagent_content(test_category, test_parameters):
 
 
 @dash_app.callback(Output(INPUT_VOLTAGE_DIV, "hidden"),
-                         Output(TEMPERATURE_DIV, "hidden"),
-                         Input(TEST_SELECTION_DROPDOWN, "value"))
+                   Output(TEMPERATURE_DIV, "hidden"),
+                   Input(TEST_SELECTION_DROPDOWN, "value"))
 def test_category_selected(test_category):
     '''
     Unhides the sidebar contents when a test category is selected
@@ -179,20 +182,22 @@ def test_category_selected(test_category):
 
 
 @dash_app.callback(Output(PAGE_CONTENT_DIV, "hidden"),
-                         Output(TEST_CONTENT_DIV, "children"),
-                         Input(TEST_SELECTION_DROPDOWN, "value"),
-                         Input(TEMPERATURE_DROPDOWN, "value"),
-                         Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="0"), "value"),
-                         Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="1"), "value"),
-                         Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="2"), "value"),
-                         Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="3"), "value")
-                         )
-def test_content_viewer(test_category, temperature_list: t.List, voltage_0, voltage_1, voltage_2, voltage_3):
+                   Output(TEST_CONTENT_DIV, "children"),
+                   Input(TEST_SELECTION_DROPDOWN, "value"),
+                   Input(TEMPERATURE_DROPDOWN, "value"),
+                   Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="0"), "value"),
+                   Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="1"), "value"),
+                   Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="2"), "value"),
+                   Input(INPUT_VOLTAGE_DROPDOWN_FORMAT.format(input_rail="3"), "value"),
+                   Input(RUNID_DIV, "children")
+                   )
+def test_content_viewer(test_category, temperature_list: t.List, voltage_0, voltage_1, voltage_2, voltage_3, runid):
     '''
     Displays the selected test content
     :param test_category:
     :return:
     '''
+    print(runid)
     print(test_category, temperature_list, voltage_0, voltage_1, voltage_2, voltage_3)
     test_parameters = {
         "temperatures": temperature_list,
@@ -205,7 +210,7 @@ def test_content_viewer(test_category, temperature_list: t.List, voltage_0, volt
     if test_category == None:
         return True, None
     elif test_category == "Aux To Main":
-        return False, aux_to_main_content(test_category, test_parameters)
+        return False, aux_to_main_content(runid=runid, test_category=test_category, test_parameters=test_parameters)
     elif test_category == "Ethagent":
         return False, ethagent_content(test_category, test_parameters)
     else:

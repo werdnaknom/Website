@@ -73,6 +73,9 @@ def create_app(config_class=Config):
     from app.csv_json import bp as json_bp
     app.register_blueprint(json_bp)
 
+    from app.testpoints import bp as testpoints
+    app.register_blueprint(testpoints)
+
     ''' All the test post processing '''
     from .post_processing import bp as post_processing_input_bp
     app.register_blueprint(post_processing_input_bp, url_prefix="/post")

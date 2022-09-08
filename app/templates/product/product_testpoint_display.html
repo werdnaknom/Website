@@ -41,7 +41,7 @@
                 {% endif %}
             </td>
             <td>
-                <button>Data</button>
+                <a href="{{url_for('testpoints.testpoint_review_by_product_runids', product=product.descriptor, testpoint=testpoint_entity['testpoint'])}}">Data</a>
             </td>
             <td>
                 <button>Revise</button>
@@ -98,5 +98,7 @@
             });
         });
     });
+
+
 
 </script>

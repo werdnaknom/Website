@@ -340,6 +340,29 @@ class MongoDatabaseFunctions(DatabaseFunctions):
             cursor = mongo.db[Config.TESTPOINT].insert_one(tpe.to_mongo())
             print(cursor)
 
+    @staticmethod
+    def get_testpoints_for_product_by_runid(product, testpoint) -> t.List:
+        pipeline = [
+            {"$match": {"project": product}},
+            {"$lookup": {
+                "from": Config.WAVEFORM,
+                # "localField": "runid",
+                # "foreignField": "runid",
+                "let": {"id": "$runid"},
+                "as": "tests",
+                "pipeline": [
+                    {"$match": {"$expr": {"$eq": ["$runid", "$$id"]},
+                                "testpoint": testpoint}},
+                    {"$project": {"_id": 1, "test_category": 1}},
+                    {"$group": {"_id": {"test_category": "$test_category"},
+                                "waveforms": {"$push": {"_id": "$_id"}}}},
+                ],
+            }},
+            {"$project": {"tests": 1, "runid": 1, "_id": 0}}
+        ]
+        cursor = mongo.db[Config.RUNID].aggregate(pipeline)
+        return cursor
+
 
 '''
     @staticmethod
