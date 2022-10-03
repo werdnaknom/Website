@@ -65,6 +65,7 @@ def update_database(query):
         ordered_keys = ["product", "pba", "rework", "serial", "runid"]
         pattern = ""
         for key in ordered_keys:
+            print("RUNNING DATABASE UPDATE:", )
             if key == "product":
                 pattern = query[key]
             else:
