@@ -211,7 +211,7 @@ class DevelopmentConfig(Config):
     RESULTS_FOLDER = r"C:\Users\ammonk\OneDrive - Intel Corporation\Desktop\Test_Folder\fake_uploads\fake_results"
 
     DATADIRECTORY = r'\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0'
-    PICKLEDIRECTORY = r'\\npo\coos\LNO_Validation\Validation_Data\_data\ATS     2.0_pickle'
+    PICKLEDIRECTORY = r'\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0_pickle'
     # Celery Config
     CELERY_BROKER_URL = "pyamqp://guest:guest@localhost:5672/vhost"
     CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
