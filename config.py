@@ -1,6 +1,8 @@
 import os
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
+
+load_dotenv()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -79,8 +81,8 @@ class Config(object):
     # MONGODB SETUP
     MONGO_DBNAME = os.getenv("MONGO_DATABASE_NAME") or "ATS2"
     MONGO_URI = os.environ.get("MONGO_URI") or "mongodb://192.168.1.226:27017" + "/" + MONGO_DBNAME
-    print("Database Name: ", os.getenv("MONGO_DATABASE_NAME"))
-    print("MONGO_URL: ", os.getenv("MONGO_URI"))
+    print("Database Name: ", MONGO_DBNAME)
+    print("MONGO_URL: ", MONGO_URI)
 
     # BACKEND SETUP
     BACKEND_DOCKER = os.environ.get("BACKEND_DOCKER_NAME")
@@ -183,6 +185,11 @@ class Config(object):
     TESTPOINT = "TESTPOINT"
 
 
+class MongoConfig(Config):
+    MONGO_URI = os.environ.get("MONGO_URI") or "mongodb://npoflask.jf.intel.com:27017"
+    DATABASE_NAME = "ATS2"
+
+
 class DeploymentConfig(Config):
     pass
 
@@ -193,7 +200,7 @@ class DevelopmentConfig(Config):
 
     # MONGODB SETUP
     MONGO_DBNAME = "ATS2"
-    MONGO_URI = "mongodb://localhost:27017"  # Must setup in standalone docker
+    MONGO_URI = os.environ.get("MONGO_URI") or "mongodb://localhost:27017"  # Must setup in standalone docker
     redis_port = 6379
     REDIS_URL = 'redis://localhost'
 
@@ -208,3 +215,33 @@ class DevelopmentConfig(Config):
     # Celery Config
     CELERY_BROKER_URL = "pyamqp://guest:guest@localhost:5672/vhost"
     CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+
+
+class DirectoryConfig(Config):
+    DATABASE_NAME = os.environ.get("OREGON_DIRECTORY") or r"\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0"
+    ATS2_OR = os.environ.get("OREGON_DIRECTORY") or r"\\npo\coos\LNO_Validation\Validation_Data\_data\ATS 2.0"
+    ATS2_KM = os.environ.get("KULIM_DIRECTORY") or r"\\npo\coos\LNO_Validation\Kulim\ATS 2.0 Data"
+    HARDDRIVE_DIRECTORIES = [ATS2_OR, ATS2_KM]
+    DIR_FMT_PROJECT = "{project}"
+    PROJECT_DEPTH = 1
+    DIR_FMT_PBA = "{project}/{pba}"
+    PBA_DEPTH = 2
+    DIR_FMT_REWORK = "{project}/{pba}/{rework}"
+    REWORK_DEPTH = 3
+    DIR_FMT_SERIAL = "{project}/{pba}/{rework}/{serial_number}"
+    SERIAL_DEPTH = 4
+    DIR_FMT_RUNID = "{project}/{pba}/{rework}/{serial_number}/{runid}"
+    RUNID_DEPTH = 5
+    DIR_FMT_TEST = "{project}/{pba}/{rework}/{serial_number}/{runid}/Tests/{test}"
+    TEST_DEPTH = 7
+    DIR_FMT_CAPTURE = "{project}/{pba}/{rework}/{serial_number}/{runid}/Tests/{test}/{capture}"
+    CAPTURE_DEPTH = 8
+    DIR_FMT_SCRIPTS_HOST = "{project}/{pba}/{rework}/{serial_number}/{runid}/Tests/{test}/{host}"
+    HOSTS_DEPTH = 8
+
+    TESTRUN_JSON_FILENAME = "testrun.json"
+    SYSTEMINFO_JSON_FILENAME = "System Info.json"
+    STATUS_JSON_FILENAME = "status.json"
+    POWER_JSON_FILENAME = "power.json"
+    POWER_CSV_FILENAME = "power.csv"
+    COMMENT_FILENAME = "Comments.txt"

@@ -1,6 +1,7 @@
 import dash
 from dash import html
 from dash import dcc
+import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input
 
 
@@ -11,6 +12,7 @@ def init_dash(server):
         use_pages=True,
         pages_folder="plotlydash/dash_pages",
         routes_pathname_prefix='/dash/',
+        #external_stylesheets=[dbc.themes.BOOTSTRAP]
     )
 
     dash_app.layout = html.Div(children=[

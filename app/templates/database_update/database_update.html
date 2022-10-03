@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/flatpickr/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',
+ filename='assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.css') }}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="embed-responsive embed-responsive-21by9">
+        <iframe class="embed-responsive-item" src="/dash/database_update"></iframe>
+    </div>
+</div>
+
+
+{% endblock %}

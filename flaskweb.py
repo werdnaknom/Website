@@ -1,13 +1,14 @@
 from config import DeploymentConfig, DevelopmentConfig
 from app import create_app
 
-#DEPLOYMENT CONFIG
-app = create_app(config_class=DeploymentConfig)
+# DEPLOYMENT CONFIG
+# UNCOMMENT FOR PRODUCTION
+# app = create_app(config_class=DeploymentConfig)
 
-globalConfig = DeploymentConfig
+# globalConfig = DeploymentConfig
 
 if __name__ == "__main__":
-    #DEVELOPMENT CONFIG
+    # DEVELOPMENT CONFIG
     config = DevelopmentConfig
     app = create_app(config_class=config)
 

@@ -10,6 +10,8 @@
         <th scope="col">Comments</th>
         <th scope="col">Max Power</th>
         <th scope="col">Modified Date</th>
+        <th scope="col">Runid</th>
+        <th scope="col">Scope Images</th>
     </tr>
     </thead>
     <tbody>
@@ -26,15 +28,16 @@
         <td>{{runid.modified_date}}</td>
         <td>
             <button data-id="{{runid._id}}" class="runidinfo btn btn-success"
-                    formaction="/products/runids/runids_ajax">View Data
+                    formaction="/products/runids/runids_ajax">View
             </button>
         </td>
         <td>
             <a href="{{url_for('product.runid_viewimage_grid', product=product.descriptor, runid=runid._id)}}">
                 <button type="submit" class="runidimage btn btn-success">
-                    Scope Images
+                    Images
                 </button>
             </a>
+        <td></td>
     </tr>
     {% endfor %}
     </tbody>
@@ -76,5 +79,7 @@
             });
         });
     });
+
+
 </script>
 

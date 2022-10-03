@@ -76,6 +76,9 @@ def create_app(config_class=Config):
     from app.testpoints import bp as testpoints
     app.register_blueprint(testpoints)
 
+    from app.database_update import bp as database_update
+    app.register_blueprint(database_update)
+
     ''' All the test post processing '''
     from .post_processing import bp as post_processing_input_bp
     app.register_blueprint(post_processing_input_bp, url_prefix="/post")
@@ -139,9 +142,9 @@ def create_app(config_class=Config):
                 return r.json()
                 '''
                 products = MongoDatabaseFunctions.list_products()
-                # return ["Need", "To", "Uncomment", "on", "server"]
                 return products
             except:
+                raise
                 return ""
 
         def get_product_update_times():

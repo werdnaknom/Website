@@ -165,25 +165,30 @@ class MongoDatabaseFunctions(DatabaseFunctions):
             temperature_list = temperature_result["temperatures"]
         channel_results = []
 
-        for channel in [0, 1, 2, 3]:
+        for channel_number in [0, 1, 2, 3]:
             ch_pipeline = [
                 {"$match": {"runid": runid}},
                 {"$project": {
-                    "_id": channel,
-                    "environment.power_supply_channels.{}".format(channel): 1,
+                    "_id": channel_number,
+                    "environment.power_supply_channels.{}".format(channel_number): 1,
                 }},
                 {"$group": {
-                    "_id": {"channel": "$environment.power_supply_channels.{}.channel_name".format(channel),
-                            "group": "$environment.power_supply_channels.{}.group".format(channel),
-                            "channel_on": "$environment.power_supply_channels.{}.channel_on".format(channel)
-                            },
-                    "voltages": {"$addToSet": "$environment.power_supply_channels.{}.voltage_setpoint".format(channel)},
-                    "slew_rates": {"$addToSet": "$environment.power_supply_channels.{}.slew_rate".format(channel)},
+                    "_id": {
+                        "channel": "$environment.power_supply_channels.{}.channel_name".format(channel_number),
+                        "group": "$environment.power_supply_channels.{}.group".format(channel_number),
+                        "channel_on": "$environment.power_supply_channels.{}.channel_on".format(channel_number)
+                    },
+                    "voltages": {
+                        "$addToSet": "$environment.power_supply_channels.{}.voltage_setpoint".format(channel_number)},
+                    "slew_rates": {
+                        "$addToSet": "$environment.power_supply_channels.{}.slew_rate".format(channel_number)},
                 }}
             ]
             # print(ch_pipeline)
             ch_result = mongo.db[Config.CAPTURE].aggregate(ch_pipeline)
-            channel_results.extend(list(ch_result))
+            for channel in ch_result:
+                channel["_id"]["channel_number"] = channel_number
+                channel_results.append(channel)
         return temperature_list, channel_results
 
     @staticmethod
@@ -198,24 +203,30 @@ class MongoDatabaseFunctions(DatabaseFunctions):
 
     @staticmethod
     def get_waveforms_by_runid(runid: int):
-        print("RUNID: ", runid)
+        # print("RUNID: ", runid)
         waveforms = mongo.db[Config.WAVEFORM].find({"runid": runid}, {'downsample': 1, "_id": 0})
         return waveforms
 
     @staticmethod
-    def get_waveforms_by_captures(runid: int, capture_list: t.List[int]):
-        waveforms = mongo.db[Config.WAVEFORM].find({"runid": runid, "capture": {"$in": capture_list}},
-                                                   {"downsample": 1, "_id": 0})
+    def get_waveforms_by_captures(runid: int, capture_list: t.List[int], test_category: str):
+        find_query = {
+            "runid": runid,
+            "capture": {"$in": capture_list},
+            "test_category": test_category
+        }
+        waveforms = mongo.db[Config.WAVEFORM].find(find_query,
+                                                   {"downsample": 1, "_id": 0, "testpoint": 1})
         return waveforms
 
     @staticmethod
-    def get_waveforms_for_aux_to_main_graph(runid: int, temperatures: t.List[int], voltages: t.Dict,
+    def get_waveforms_for_aux_to_main_graph(test_category: str, runid: int, temperatures: t.List[int], voltages: t.Dict,
                                             scope_channels: t.List[int]) -> t.List:
         CAPTURE_LIST = "captures"
         match_dict = {
             "runid": runid,
             "environment.chamber_setpoint": {"$in": temperatures},
         }
+        # print(voltages)
         for ch, voltage_list in voltages.items():
             if voltage_list:
                 key_str = f"environment.power_supply_channels.{ch}.voltage_setpoint".format(ch)
@@ -227,11 +238,13 @@ class MongoDatabaseFunctions(DatabaseFunctions):
                  {"_id": {"runids": "$runid"},
                   CAPTURE_LIST: {"$addToSet": "$capture"}}
              }]
-        # print(capture_pipeline)
         captures_cursor = mongo.db[Config.CAPTURE].aggregate(capture_pipeline)
-        captures = list(captures_cursor)[0][CAPTURE_LIST]
-
-        waveforms = MongoDatabaseFunctions.get_waveforms_by_captures(runid=runid, capture_list=captures)
+        waveforms = []
+        for capture in captures_cursor:
+            captures = capture[CAPTURE_LIST]
+            capture_waveforms = MongoDatabaseFunctions.get_waveforms_by_captures(runid=runid, capture_list=captures,
+                                                                                 test_category=test_category)
+            waveforms.extend(capture_waveforms)
 
         return waveforms
 
@@ -253,10 +266,13 @@ class MongoDatabaseFunctions(DatabaseFunctions):
                         # "images": {"$addToSet": "$capture_image.path_str"},
                         "all": {"$push": {
                             "capture_id": "$_id",
+                            "capture": "$capture",
                             "image": "$capture_image.path_str",
                             "environment": "$environment"
                         }}}},
+            {"$sort": {"test.all.capture_id": 1}}
         ]
+        # TODO:: The sort doesn't work!
         result = mongo.db[Config.CAPTURE].aggregate(pipeline)
         return list(result)
 
@@ -282,10 +298,10 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         cursor = mongo.db[Config.RUNID].aggregate(pipeline)
         testpoint_set = set()
         for runid_dict in cursor:
-            print(runid_dict)
+            # print(runid_dict)
             testpoints = runid_dict["_id"]["waveforms"]
             # testpoints.add(runid_dict["_id"]["waveforms"])
-            print(testpoint_set.update(testpoints))
+            # print(testpoint_set.update(testpoints))
         result = list(testpoint_set)
         result.sort()
         return result
@@ -338,7 +354,7 @@ class MongoDatabaseFunctions(DatabaseFunctions):
                               associated_rail="")
         if not mongo.db[Config.TESTPOINT].find_one({"_id": tpe.get_id()}):
             cursor = mongo.db[Config.TESTPOINT].insert_one(tpe.to_mongo())
-            print(cursor)
+            # print(cursor)
 
     @staticmethod
     def get_testpoints_for_product_by_runid(product, testpoint) -> t.List:
