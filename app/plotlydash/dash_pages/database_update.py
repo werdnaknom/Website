@@ -97,7 +97,7 @@ def layout():
                             hidden=True)
     progress_div = html.Div(id="progress_div",
                             children=[dbc.Progress(id="progress_bar", value=0, color="success"),
-                                      dcc.Interval(id='progress_interval', n_intervals=0, interval=50,
+                                      dcc.Interval(id='progress_interval', n_intervals=0, interval=750,
                                                    disabled=True)],
                             hidden=True)
 
