@@ -226,9 +226,11 @@ class MongoDatabaseFunctions(DatabaseFunctions):
             "runid": runid,
             "environment.chamber_setpoint": {"$in": temperatures},
         }
-        # print(voltages)
         for ch, voltage_list in voltages.items():
             if voltage_list:
+                if type(voltage_list) != list:
+                    voltage_list = [voltage_list]
+                #print(voltage_list)
                 key_str = f"environment.power_supply_channels.{ch}.voltage_setpoint".format(ch)
                 search_str = {"$in": voltage_list}
                 match_dict[key_str] = search_str
@@ -238,6 +240,7 @@ class MongoDatabaseFunctions(DatabaseFunctions):
                  {"_id": {"runids": "$runid"},
                   CAPTURE_LIST: {"$addToSet": "$capture"}}
              }]
+        #print(capture_pipeline)
         captures_cursor = mongo.db[Config.CAPTURE].aggregate(capture_pipeline)
         waveforms = []
         for capture in captures_cursor:

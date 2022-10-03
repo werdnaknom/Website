@@ -112,7 +112,7 @@ def input_voltage_dropdown(input_voltage_groups: t.List) -> html.Div:
                                               dcc.Dropdown(
                                                   id=INPUT_VOLTAGE_DROPDOWN_FORMAT.format(
                                                       input_rail=voltage_channel_number),
-                                                  value=voltage_voltages,
+                                                  value=voltage_voltages[0],
                                                   options=voltage_voltages,
                                                   multi=True
                                               )
