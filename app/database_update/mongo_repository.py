@@ -14,6 +14,9 @@ class MongoRepository(Repository):
         mongo_uri = MC.MONGO_URI
         self.client = MongoClient(mongo_uri)
         db = self.client[MC.DATABASE_NAME]
+        print(MC.DATABASE_NAME)
+        print(MC.MONGOURI)
+        print(db)
         super(MongoRepository, self).__init__(database=db)
 
     def _retrieve_project(self, name: str) -> ProjectEntity:
