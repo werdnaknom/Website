@@ -15,7 +15,7 @@ class MongoRepository(Repository):
         self.client = MongoClient(mongo_uri)
         db = self.client[MC.DATABASE_NAME]
         print(MC.DATABASE_NAME)
-        print(MC.MONGOURI)
+        print(MC.MONGO_URI)
         print(db)
         super(MongoRepository, self).__init__(database=db)
 
