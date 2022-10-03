@@ -165,8 +165,8 @@ def submit_pushed(n_clicks, product, pba, rework, serial, runid, end_timer):
         for key, value in query.items():
             if value == "All":
                 query[key] = "*"
-        # thread = Thread(target=update_database, args=(query,))
-        # thread.start()
+        thread = Thread(target=update_database, args=(query,))
+        thread.start()
         return True, False
     else:
         raise PreventUpdate
