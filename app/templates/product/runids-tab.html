@@ -12,6 +12,7 @@
         <th scope="col">Modified Date</th>
         <th scope="col">Runid</th>
         <th scope="col">Scope Images</th>
+        <th scope="col">Data Valid</th>
     </tr>
     </thead>
     <tbody>
@@ -38,6 +39,21 @@
                 </button>
             </a>
         <td></td>
+        <td>
+            {% set validList = ['Unknown', 'Valid', 'Invalid'] %}
+            <select class="validselect form-select" aria-label="{{runid._id}} valid select" data-id="{{runid._id}}">
+                {% for valid_state in validList %}
+
+                {% if runid.valid in valid_state %}
+                <option selected>{{valid_state}}</option>
+                {% else %}
+                <option value="{{valid_state}}">{{valid_state}}</option>
+
+                {%endif %}
+
+                {% endfor %}
+            </select>
+        </td>
     </tr>
     {% endfor %}
     </tbody>
@@ -80,6 +96,18 @@
         });
     });
 
-
 </script>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.validselect').change(function(){
+        var runid = $(this).data('id');
+        var validvalue = $(this).val();
+        $.post({
+                url: '/products/runids/runid_validity_update_ajax',
+                data: {runid: runid, value:validvalue},
+            });
+        });
+        });
+
+</script>

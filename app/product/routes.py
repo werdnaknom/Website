@@ -390,3 +390,13 @@ def runid_overview_ajax():
                                              tests_run=tests_run_str,
                                              runid=runid[3:]
                                              )})
+
+
+@bp.route('/products/runids/runid_validity_update_ajax', methods=('GET', 'POST'))
+def runid_validity_update_ajax():
+    if request.method == "POST":
+        runid = request.form["runid"]
+        validity = request.form["value"]
+        updated = MongoDatabaseFunctions.update_runid_validity(runid_id=runid, validity=validity)
+        # updated is a pymongo result object
+        return jsonify({})

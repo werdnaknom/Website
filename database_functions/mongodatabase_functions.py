@@ -230,7 +230,7 @@ class MongoDatabaseFunctions(DatabaseFunctions):
             if voltage_list:
                 if type(voltage_list) != list:
                     voltage_list = [voltage_list]
-                #print(voltage_list)
+                # print(voltage_list)
                 key_str = f"environment.power_supply_channels.{ch}.voltage_setpoint".format(ch)
                 search_str = {"$in": voltage_list}
                 match_dict[key_str] = search_str
@@ -240,7 +240,7 @@ class MongoDatabaseFunctions(DatabaseFunctions):
                  {"_id": {"runids": "$runid"},
                   CAPTURE_LIST: {"$addToSet": "$capture"}}
              }]
-        #print(capture_pipeline)
+        # print(capture_pipeline)
         captures_cursor = mongo.db[Config.CAPTURE].aggregate(capture_pipeline)
         waveforms = []
         for capture in captures_cursor:
@@ -250,6 +250,11 @@ class MongoDatabaseFunctions(DatabaseFunctions):
             waveforms.extend(capture_waveforms)
 
         return waveforms
+
+    @staticmethod
+    def get_one_runid(runid_id):
+        cursor = mongo.db[Config.RUNID].find_one({"_id": runid_id})
+        return cursor
 
     @staticmethod
     def get_runid_capture_image_and_information(runid: str, capture: int):
@@ -381,6 +386,13 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         ]
         cursor = mongo.db[Config.RUNID].aggregate(pipeline)
         return cursor
+
+    @staticmethod
+    def update_runid_validity(runid_id, validity):
+        query = {"_id": runid_id}
+        new_valid = {"$set": {"valid": validity}}
+        updated_runid = mongo.db[Config.RUNID].update_one(query, new_valid)
+        return updated_runid
 
 
 '''
