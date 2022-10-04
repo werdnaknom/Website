@@ -360,8 +360,9 @@ def runid_overview_ajax():
         configuration = testrun_json.get("configuration", "")
         board_id = testrun_json.get("board_id", -9999)
 
-        for tp in test_points.keys():
-            probes[int(tp)]["Name"] = test_points[tp]
+        if probes:
+            for tp in test_points.keys():
+                probes[int(tp)]["Name"] = test_points[tp]
 
         tests_run = MongoDatabaseFunctions.get_runid_test_categories(runid=runid_request["runid"])
         tests_run_str = ", ".join(tests_run)
