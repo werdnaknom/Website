@@ -1,6 +1,7 @@
 import typing as t
 from pathlib import Path
 from threading import Thread
+import os
 
 import dash
 from dash import html
@@ -12,10 +13,10 @@ from dash.dependencies import Output, Input, State
 from dash.exceptions import PreventUpdate
 from app.database_update.database_update import update_database
 
-#OREGON_HARDDRIVE_LOC = current_app.config.get("DATADIRECTORY")
-#KULIM_HARDDRIVE_LOC = current_app.config.get("KM_DATADIRECTORY")
-OREGON_HARDDRIVE_LOC = "//npo/coos/LNO_Validation/Validation_Data/_data/ATS 2.0"
-KULIM_HARDDRIVE_LOC = "//npo/coos/LNO_Validation/Kulim/ATS 2.0 Data"
+# OREGON_HARDDRIVE_LOC = current_app.config.get("DATADIRECTORY")
+# KULIM_HARDDRIVE_LOC = current_app.config.get("KM_DATADIRECTORY")
+OREGON_HARDDRIVE_LOC = os.environ.get("OREGON_DIRECTORY")  # "//npo/coos/LNO_Validation/Validation_Data/_data/ATS 2.0"
+KULIM_HARDDRIVE_LOC = os.environ.get("KULIM_DIRECTORY")  # "//npo/coos/LNO_Validation/Kulim/ATS 2.0 Data"
 
 HARDDRIVE_PATHS = [Path(OREGON_HARDDRIVE_LOC), Path(KULIM_HARDDRIVE_LOC)]
 

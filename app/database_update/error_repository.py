@@ -18,6 +18,7 @@ class ErrorHandler():
         raise NotImplemented
 
     def write_error(self, traceback: Exception, message: str, path: str = None):
+        raise traceback
         logger.warning(f"REPO ERROR HANDLER LOG: {message}")
         ee = ErrorEntity(error_traceback=str(traceback), error_msg=message, path=path)
         self._insert_error(error=ee)

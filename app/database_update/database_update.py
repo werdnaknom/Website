@@ -4,7 +4,6 @@ import typing as t
 from .directory_repository import DirectoryRepository
 from .error_repository import MongoErrorHandler
 from .mongo_repository import MongoRepository
-from app.extensions import mongo
 from Entities.Entities import *
 
 from config import DirectoryConfig
@@ -57,7 +56,7 @@ def waveforms_to_mongo(error_repo, mongo_repo, path_iter: t.Iterable[Path], from
 def update_database(query):
     harddrives = DirectoryConfig.HARDDRIVE_DIRECTORIES
     error_repo = MongoErrorHandler()
-    mongo_repo = mongo
+    mongo_repo = MongoRepository()
 
     for base_directory in harddrives:
         directory_repo = DirectoryRepository(error_handler=error_repo,
