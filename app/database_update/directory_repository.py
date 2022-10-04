@@ -359,6 +359,7 @@ class DirectoryRepository(Repository):
             rework = self._get_rework_from_parents(cur_dir=path)
             serial = self._get_serial_from_parents(cur_dir=path)
             power = {}
+            valid = "Unknown"
             for file in path.iterdir():
                 if file.is_file():
                     if DC.COMMENT_FILENAME in file.name:
@@ -371,6 +372,8 @@ class DirectoryRepository(Repository):
                         pass
                     elif DC.STATUS_JSON_FILENAME in file.name:
                         status = self.from_directory_status(path=file)
+                        if status.status == "Aborted":
+                            valid = "Invalid"
                     elif "steps.xml" in file.name:
                         pass
                     elif DC.SYSTEMINFO_JSON_FILENAME in file.name:
@@ -385,7 +388,8 @@ class DirectoryRepository(Repository):
                                  system_info=system_info,
                                  testrun=testrun,
                                  comments=comments,
-                                 power=power)
+                                 power=power,
+                                 valid=valid)
             return entity
         except Exception as e:
             self.error_handler.write_error(traceback=e,
