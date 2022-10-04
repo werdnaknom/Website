@@ -16,4 +16,5 @@ def load_image(filename):
     if not Path(filename).exists():
         filename = filename.replace("\\", "/")
     filepath = Path(filename)
+    print(filepath)
     return send_file(filepath, mimetype='image/fig')
