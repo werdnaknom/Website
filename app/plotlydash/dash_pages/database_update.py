@@ -42,6 +42,8 @@ def harddrive_query(depth: int = 0, query: dict = dict) -> t.List[str]:
                     query.get("runid", "*"),
                     ]
     for harddrive in HARDDRIVE_PATHS:
+        print(HARDDRIVE_PATHS)
+        print(harddrive)
         if depth != 0:
             pattern = "/".join(pattern_list[:depth + 1])
             result.update([x.name for x in harddrive.glob(pattern) if x.is_dir()])
