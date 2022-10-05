@@ -13,11 +13,14 @@ def display_file(filename):
 
 @bp.route('/display/<path:filename>')
 def load_image(filename):
+    filename = "/" + filename
     filepath = Path(filename)
     print(filepath)
     print(filepath.exists())
     print(filepath.resolve())
+    '''
     if not filepath.exists():
         filename = filename.replace("\\", "/")
         filepath = Path(filename)
+    '''
     return send_file(filepath, mimetype='image/fig')
