@@ -62,7 +62,7 @@ class DirectoryRepository(Repository):
 
     def list_test_paths(self, query: dict = dict) -> t.Iterable[Path]:
         logger.info(f"test paths query: {query}")
-        pattern = DC.DIR_FMT_TEST.format(project=query.get("project", "*"), pba=query.get("pba", "*"),
+        pattern = DC.DIR_FMT_TEST.format(project=query.get("product", "*"), pba=query.get("pba", "*"),
                                          rework=query.get("rework", "*"),
                                          serial_number=query.get("serial", "*"),
                                          runid=query.get("runid", "*"), test=query.get("test", "*"))
@@ -71,7 +71,7 @@ class DirectoryRepository(Repository):
 
     def list_capture_paths(self, query: dict = dict) -> t.Iterable[Path]:
         logger.info(f"{__name__}: {query}")
-        pattern = DC.DIR_FMT_CAPTURE.format(project=query.get("project", "*"), pba=query.get("pba", "*"),
+        pattern = DC.DIR_FMT_CAPTURE.format(project=query.get("product", "*"), pba=query.get("pba", "*"),
                                             rework=query.get("rework", "*"),
                                             serial_number=query.get("serial", "*"),
                                             runid=query.get("runid", "*"), test=query.get("test", "*"),
