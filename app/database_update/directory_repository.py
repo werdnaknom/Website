@@ -627,11 +627,13 @@ class DirectoryRepository(Repository):
     def from_runid_directory_add_waveforms(self, path: Path) -> t.List[WaveformEntity]:
         wfm_list = []
         wfm_analysis = WaveformAnalysis()
-        testrun = self.from_directory_testrun(path.joinpath("testrun.json"))
+        testrun: TestRunFileEntity = self.from_directory_testrun(path.joinpath("testrun.json"))
+        system_info: SystemInfoFileEntity = self.from_directory_system_info(path=path.joinpath("System Info.json"))
         for i, glob_binary in enumerate(
                 ["CH1.bin", "CH2.bin", "CH3.bin", "CH4.bin", "CH5.bin", "CH6.bin", "CH7.bin", "CH8.bin"]):
             try:
                 testpoint = testrun.test_points[str(i)]
+                probe_units = system_info.get_probe(i).units
                 runid = int(path.name)
                 for binary_path in path.rglob(glob_binary):
                     capture_settings = self.from_directory_capture_settings(path=binary_path.parent)
@@ -644,20 +646,21 @@ class DirectoryRepository(Repository):
                     downsample = wfm_analysis.min_max_downsample_2d(wf_x=wf_x, wf_y=wf_y, size=500)
                     wfm = WaveformEntity(testpoint=testpoint, runid=runid, capture=capture,
                                          test_category=test_automation,
-                                         units="UNITSNEEDTOBEFOUND", location=str(binary_path.resolve()),
+                                         units=probe_units, location=str(binary_path.resolve()),
                                          scope_channel=i + 1,
                                          downsample=downsample)
 
                     # TODO:: Have the waveform creation task do this itself!
                     target = wfm_analysis.find_cutoff_target_by_percentile(wf=wf_y)
-                    ss_index = wfm.steady_state_index(expected_voltage=target * 0.9)
-                    wfm.steady_state_mean = round(wf_y[ss_index].mean(), 2)
-                    wfm.set_steady_state_index(index=0)
-                    wfm.max = round(wf_y.max(), 2)
-                    wfm.min = round(wf_y.min(), 2)
-                    wfm.steady_state_max = round(wf_y[ss_index:].max(), 2)
-                    wfm.steady_state_min = round(wf_y[ss_index:].min(), 2)
-                    wfm.steady_state_pk2pk = wfm.steady_state_max - wfm.steady_state_min
+                    ss_wfm = wfm_analysis.find_steady_state_waveform_by_percentile(wf=wf_y)
+                    downsample_ss_index = wfm.steady_state_index(expected_voltage=target * 0.9)
+                    wfm.steady_state_mean = round(ss_wfm.mean(), 4)
+                    wfm.set_steady_state_index(index=downsample_ss_index)
+                    wfm.max = round(wf_y.max(), 4)
+                    wfm.min = round(wf_y.min(), 4)
+                    wfm.steady_state_max = round(ss_wfm.max(), 4)
+                    wfm.steady_state_min = round(ss_wfm.min(), 4)
+                    wfm.steady_state_pk2pk = round(ss_wfm.ptp(),4)
                     wfm_list.append(wfm)
             except Exception as e:
                 self.error_handler.write_error(traceback=e,
