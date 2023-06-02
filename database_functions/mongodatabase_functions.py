@@ -346,23 +346,34 @@ class MongoDatabaseFunctions(DatabaseFunctions):
         return list(mongo.db[Config.TESTPOINT].find({"product": product}))
 
     @staticmethod
-    def insert_testpoint_metrics(product: str, testpoint: str, edge_rail: bool, nominal_voltage: float,
+    def upsert_testpoint_metrics(product: str, testpoint: str, edge_rail: bool, nominal_value: float,
                                  spec_min: float, spec_max: float, bandwidth: float, max_poweron_time: float,
-                                 valid_voltage: float, current_rail: bool, associated_rail: str):
+                                 valid_voltage: float, current_rail: bool, associated_rail: str, poweron_order: str):
         tpe = TestpointEntity(product=product,
                               testpoint=testpoint,
-                              nominal_value=nominal_voltage,
+                              edge_rail=edge_rail,
+                              current_rail=current_rail,
+                              associated_rail=associated_rail,
+                              nominal_value=nominal_value,
                               min_value=spec_min,
                               max_value=spec_max,
                               bandwidth_mhz=bandwidth,
                               valid_value=valid_voltage,
                               poweron_time_ms=max_poweron_time,
-                              edge_rail=edge_rail,
-                              current_rail=False,
-                              associated_rail="")
-        if not mongo.db[Config.TESTPOINT].find_one({"_id": tpe.get_id()}):
-            cursor = mongo.db[Config.TESTPOINT].insert_one(tpe.to_mongo())
-            # print(cursor)
+                              poweron_order=poweron_order
+                              )
+        # Define the filter to find the testpoint if it exists
+        tpe_filter = tpe.get_id()
+
+        # define the new testpoint to replace the existing one
+        new_testpoint = tpe.to_mongo()
+
+        cursor = mongo.db[Config.TESTPOINT].replace_one(tpe_filter, new_testpoint, upsert=True)
+        '''
+        print('Matched Count:', cursor.matched_count)
+        print('Modified Count:', cursor.modified_count)
+        print('Upserted ID:', cursor.upserted_id)
+        '''
 
     @staticmethod
     def get_testpoints_for_product_by_runid(product, testpoint) -> t.List:

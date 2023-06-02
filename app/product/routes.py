@@ -122,24 +122,30 @@ def product(product):
     '''
     testpoint_form = Testpoint_Voltage_Form()
     if testpoint_form.validate_on_submit():
-        product = testpoint_form.product.data
-        testpoint = testpoint_form.testpoint.data
-        edge_rail = testpoint_form.edge_rail.data
-        nominal_value = float(testpoint_form.nominal_voltage.data)
-        spec_min = float(testpoint_form.spec_min.data)
-        spec_max = float(testpoint_form.spec_max.data)
-        bandwidth = float(testpoint_form.bandwidth.data)
-        max_poweron_time = float(testpoint_form.max_poweron_time.data)
-        valid_voltage = float(testpoint_form.valid_voltage.data)
-        current_rail = False
-        associated_rail = ""
+        testpoint_dict = {
+            "product": testpoint_form.product.data,
+            "testpoint": testpoint_form.testpoint.data,
+            "edge_rail": testpoint_form.edge_rail.data,
+            "current_rail": testpoint_form.current_rail.data,
+            "associated_rail": "",
+            "nominal_value": float(testpoint_form.nominal_voltage.data),
+            "min_value": float(testpoint_form.spec_min.data),
+            "max_value": float(testpoint_form.spec_max.data),
+            "bandwidth_mhz": float(testpoint_form.bandwidth.data),
+            "valid_voltage": float(testpoint_form.valid_voltage.data),
+            "poweron_time_ms": float(testpoint_form.max_poweron_time.data),
+            "poweron_order": testpoint_form.poweron_order,
+        }
+        MongoDatabaseFunctions.upsert_testpoint_metrics(**testpoint_dict)
 
+        '''
         MongoDatabaseFunctions.insert_testpoint_metrics(product=product, testpoint=testpoint, edge_rail=edge_rail,
                                                         nominal_voltage=nominal_value, spec_max=spec_max,
                                                         spec_min=spec_min, bandwidth=bandwidth,
                                                         valid_voltage=valid_voltage,
                                                         max_poweron_time=max_poweron_time, current_rail=current_rail,
                                                         associated_rail=associated_rail)
+        '''
     else:
         pass
         # print(testpoint_form.errors)
@@ -319,7 +325,6 @@ def product_add_testpoint_ajax():
     if request.method == "POST":
         testpoint = request.form["testpoint"]
         product = request.form["product"]
-        print(testpoint, product)
         voltage_form = Testpoint_Voltage_Form()
         return jsonify({'htmlresponse': render_template('product/create_product_testpoint.html',
                                                         voltage_form=voltage_form,
