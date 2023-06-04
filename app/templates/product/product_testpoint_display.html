@@ -20,6 +20,8 @@
             <th scope="col">Spec Max</th>
             <th scope="col">Spec Min</th>
             <th scope="col">Bandwidth(MHz)</th>
+            <th scope="col">Power-on Time (ms)</th>
+            <th scope="col">Power-on Order</th>
             <th scope="col">Edge Rail</th>
             <th scope="col"></th>
             <th scope="col"></th>
@@ -33,18 +35,32 @@
             <td>{{testpoint_entity["max_value"]}}</td>
             <td>{{testpoint_entity["min_value"]}}</td>
             <td>{{testpoint_entity["bandwidth_mhz"]}}</td>
+            <td>{{testpoint_entity["poweron_time_ms"]}}</td>
+            <td>{{testpoint_entity["poweron_order"]}}</td>
             <td>
                 {% if testpoint_entity["edge_rail"] %}
-                <input class="form-check-input " type="checkbox" value="" checked disabled>
+                <input class="form-check-input " type="radio" name="flexRadioDisabled" id="flexRadioCheckedDisabled"
+                       checked disabled>
                 {% else %}
-                <input class="form-check-input" type="checkbox" value="" disabled>
+                <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioDisabled" disabled>
                 {% endif %}
             </td>
             <td>
                 <a href="{{url_for('testpoints.testpoint_review_by_product_runids', product=product.descriptor, testpoint=testpoint_entity['testpoint'])}}">Data</a>
             </td>
             <td>
-                <button>Revise</button>
+                <button data-id="{{testpoint_entity.testpoint}}" data-product="{{product.descriptor}}"
+                        data-nominal="{{testpoint_entity.nominal_value}}"
+                        data-bandwidth="{{testpoint_entity.bandwidth_mhz}}"
+                        data-edge="{{testpoint_entity.edge_rail}}" data-valid="{{testpoint_entity.valid_value}}"
+                        data-current="{{testpoint_entity.current_rail}}"
+                        data-poweron="{{testpoint_entity.poweron_time_ms}}"
+                        data-associated="{{testpoint_entity.associated_rail}}"
+                        data-order="{{testpoint_entity.poweron_order}}"
+                        data-max="{{testpoint_entity.max_value}}" data-min="{{testpoint_entity.min_value}}"
+                        class="update_testpoint btn btn-primary"
+                        formaction="/products/add_testpoint_ajax">Revise
+                </button>
             </td>
         </tr>
         {% endfor %}
@@ -99,6 +115,50 @@
         });
     });
 
+</script>
 
-
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.update_testpoint').click(function(){
+            var testpoint = $(this).data('id');
+            var product =$(this).data('product');
+            var nominal = $(this).data('nominal');
+            var min = $(this).data('min');
+            var edge = $(this).data('edge');
+            var current = $(this).data('current');
+            var associated = $(this).data('associated');
+            var max = $(this).data('max');
+            var bandwidth = $(this).data('bandwidth');
+            var valid = $(this).data('valid');
+            var poweron = $(this).data('poweron');
+            var order = $(this).data('order');
+            jsonDict = {
+                        "testpoint": testpoint,
+                        "product": product,
+                        "nominal_value": nominal,
+                        "min_value": min,
+                        "edge_rail":edge,
+                        "current_rail":current,
+                        "associated_rail":associated,
+                        "max_value":max,
+                        "bandwidth_mhz":bandwidth,
+                        "valid_value":valid,
+                        "poweron_time_ms":poweron,
+                        "poweron_order":order,
+                        };
+            jsonData = JSON.stringify(jsonDict);
+            $.ajax({
+                url: '/products/testpoint/update_testpoint_ajax',
+                type:'post',
+                contentType: 'application/json',
+                data: jsonData,
+                success: function(data){
+                    $('.modal-title').html("Add Testpoint: ").append(testpoint);
+                    $('.modal-body').html(data);
+                    $('.modal-body').append(data.htmlresponse);
+                    $('#addTestpointModal').modal('show');
+                }
+            });
+        });
+    });
 </script>

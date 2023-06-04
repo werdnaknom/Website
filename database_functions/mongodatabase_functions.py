@@ -347,26 +347,27 @@ class MongoDatabaseFunctions(DatabaseFunctions):
 
     @staticmethod
     def upsert_testpoint_metrics(product: str, testpoint: str, edge_rail: bool, nominal_value: float,
-                                 spec_min: float, spec_max: float, bandwidth: float, max_poweron_time: float,
-                                 valid_voltage: float, current_rail: bool, associated_rail: str, poweron_order: str):
+                                 min_value: float, max_value: float, bandwidth_mhz: float, poweron_time_ms: float,
+                                 valid_voltage: float, current_rail: bool, associated_rail: str, poweron_order: int):
         tpe = TestpointEntity(product=product,
                               testpoint=testpoint,
                               edge_rail=edge_rail,
                               current_rail=current_rail,
                               associated_rail=associated_rail,
                               nominal_value=nominal_value,
-                              min_value=spec_min,
-                              max_value=spec_max,
-                              bandwidth_mhz=bandwidth,
+                              min_value=min_value,
+                              max_value=max_value,
+                              bandwidth_mhz=bandwidth_mhz,
                               valid_value=valid_voltage,
-                              poweron_time_ms=max_poweron_time,
+                              poweron_time_ms=poweron_time_ms,
                               poweron_order=poweron_order
                               )
         # Define the filter to find the testpoint if it exists
-        tpe_filter = tpe.get_id()
+        tpe_filter = {"_id": tpe.get_id()}
 
         # define the new testpoint to replace the existing one
         new_testpoint = tpe.to_mongo()
+        print(new_testpoint)
 
         cursor = mongo.db[Config.TESTPOINT].replace_one(tpe_filter, new_testpoint, upsert=True)
         '''

@@ -8,6 +8,9 @@ from app.product import bp
 from io import BytesIO
 import datetime
 
+from Entities.Entities.entities import TestpointEntity
+import json
+
 from database_functions.mongodatabase_functions import MongoDatabaseFunctions
 from .forms import Testpoint_Voltage_Form
 
@@ -134,7 +137,7 @@ def product(product):
             "bandwidth_mhz": float(testpoint_form.bandwidth.data),
             "valid_voltage": float(testpoint_form.valid_voltage.data),
             "poweron_time_ms": float(testpoint_form.max_poweron_time.data),
-            "poweron_order": testpoint_form.poweron_order,
+            "poweron_order": int(testpoint_form.poweron_order.data),
         }
         MongoDatabaseFunctions.upsert_testpoint_metrics(**testpoint_dict)
 
@@ -156,6 +159,9 @@ def product(product):
     reworks = get_rework_entities_by_product(product)
     runids = get_runid_entities_by_product(product)
     testpoint_entities, raw_testpoints = get_waveform_testpoints_by_product(product)
+    for testpoint_entity in testpoint_entities:
+        testpoint_entity.pop("modified_date")
+        testpoint_entity.pop("created_date")
 
     # print(product_entity.tests_unique)
     return render_template('/product/product.html',
@@ -332,10 +338,44 @@ def product_add_testpoint_ajax():
                                                         testpoint=testpoint)})
 
 
+@bp.route('/products/testpoint/update_testpoint_ajax', methods=('GET', 'POST'))
+def product_update_testpoint_ajax():
+    if request.method == "POST":
+        data = request.get_json()
+        for key, value in data.items():
+            if value == "False":
+                data[key] = False
+            elif value == "True":
+                data[key] = True
+            elif key in ["nominal_value", "min_value", "max_value", "bandwidth_mhz", "valid_value", "poweron_time_ms"]:
+                data[key] = float(value)
+            elif key in ["poweron_order"]:
+                try:
+                    data[key] = int(value)
+                except ValueError:
+                    data[key] = 0
+            print(key, data[key], type(data[key]))
+        testpoint_entity = TestpointEntity.from_dict(adict=data)
+        product = data["product"]
+        voltage_form = Testpoint_Voltage_Form()
+        voltage_form.nominal_voltage.data = testpoint_entity.nominal_value
+        voltage_form.edge_rail.data = testpoint_entity.edge_rail
+        voltage_form.current_rail.data = testpoint_entity.current_rail
+        voltage_form.spec_min.data = testpoint_entity.min_value
+        voltage_form.spec_max.data = testpoint_entity.max_value
+        voltage_form.bandwidth.data = testpoint_entity.bandwidth_mhz
+        voltage_form.max_poweron_time.data = testpoint_entity.poweron_time_ms
+        voltage_form.poweron_order.data = testpoint_entity.poweron_order
+        voltage_form.valid_voltage.data = testpoint_entity.valid_value
+        return jsonify({'htmlresponse': render_template('product/create_product_testpoint.html',
+                                                        voltage_form=voltage_form,
+                                                        product=product,
+                                                        testpoint=testpoint_entity.testpoint)})
+
+
 @bp.route('/products/runids/runid_overview_ajax', methods=('GET', 'POST'))
 def runid_overview_ajax():
     if request.method == "POST":
-        # TODO:: Get this data dynamically
         runid = request.form["runid"]
         runid_request = MongoDatabaseFunctions.find_runid_by_id(runid)
         # RUNID INFO
