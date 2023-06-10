@@ -1,0 +1,87 @@
+<div class="container-fluid">
+
+
+    <div class="container-fluid">
+        <div class="row" id="probe_row">
+            <div class="col">
+                <h1> Tests </h1>
+                <br>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <td> Test Name</td>
+                        <td> Options</td>
+                        <td> Analyze</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for test in tests_run_list %}
+                    <tr>
+                        <td>{{test}}</td>
+                        <td>
+                            <!--
+                            <select id="test-options-{{loop.index}}" multiple>
+                                {% for probe in probes %}
+                                <option value='{{ probe["Name"] }}'>{{ probe["Name"] }}</option>
+                                {% endfor %}
+                            </select>
+                            -->
+                        </td>
+                        <td>
+                            <button class="btn btn-primary analyze-btn" data-testname="{{ test | safe }}" type="button">
+                                Analyze Data
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+  $('.analyze-btn').click(function() {
+    var testname = $(this).data('testname');
+    var filename = testname + '.xlsx'
+    //var selectedOptions = $(this).closest('tr').find('select').val();
+    var requestData = {
+        test: testname,
+        //selected_options = selectedOptions
+        };
+    // Make the Ajax request
+    $.ajax({
+      url: '/products/runids/analyze_runid_tests',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(requestData),
+      xhrFields: {
+                responseType: 'blob'  // Set the response type to 'blob'
+      },
+      success: function(response) {
+            var fileUrl = URL.createObjectURL(response);
+            var link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(fileUrl);
+      },
+      error: function(error) {
+        // Handle the error
+        console.log(error);
+      }
+    });
+  });
+});
+
+
+
+
+
+
+
+
+</script>

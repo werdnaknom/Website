@@ -19,7 +19,7 @@
                 </p>
                 <p> Configuration: {{configuration}}</p>
                 <p> Comments: <br> {{comments}}</p>
-                <p> Tests Run: {{tests_run}}</p>
+                <p> Tests Run: {{tests_run_str}}</p>
 
             </div>
             <div class="col border">
@@ -74,6 +74,10 @@
                 </table>
             </div>
         </div>
+        <div class="row">
+            {% include 'product/runid_analyze_tests.html' %}
+        </div>
+
         <div class="row">
             <!--{#<iframe src="/dash/runid_viewdata/{{runid}}" frameborder="0"></iframe>#}-->
             <a href="/dash/runid_viewdata/{{runid}}">LINK</a>

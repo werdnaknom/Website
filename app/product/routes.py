@@ -1,7 +1,7 @@
 import typing as t
 from dataclasses import dataclass, field
 
-from flask import render_template, jsonify, Markup, send_file, current_app, request
+from flask import render_template, jsonify, Markup, send_file, current_app, request, make_response
 import requests
 from Entities.Entities import ProjectEntity, PBAEntity, ReworkEntity, RunidEntity, WaveformCaptureEntity
 from app.product import bp
@@ -354,7 +354,6 @@ def product_update_testpoint_ajax():
                     data[key] = int(value)
                 except ValueError:
                     data[key] = 0
-            print(key, data[key], type(data[key]))
         testpoint_entity = TestpointEntity.from_dict(adict=data)
         product = data["product"]
         voltage_form = Testpoint_Voltage_Form()
@@ -413,10 +412,6 @@ def runid_overview_ajax():
         tests_run_str = ", ".join(tests_run)
 
         temperatures, voltages = MongoDatabaseFunctions.get_runid_capture_data(runid=runid_request["runid"])
-        for l in voltages:
-            print("--------------")
-            for key in l.keys():
-                print(key, l[key])
         return jsonify(
             {'htmlresponse': render_template('product/runid_overview_with_dash.html',
                                              probes=probes,
@@ -432,7 +427,8 @@ def runid_overview_ajax():
                                              status=status,
                                              status_info=status_info,
                                              comments=comments,
-                                             tests_run=tests_run_str,
+                                             tests_run_str=tests_run_str,
+                                             tests_run_list=tests_run,
                                              runid=runid[3:]
                                              )})
 
@@ -445,3 +441,37 @@ def runid_validity_update_ajax():
         updated = MongoDatabaseFunctions.update_runid_validity(runid_id=runid, validity=validity)
         # updated is a pymongo result object
         return jsonify({})
+
+
+@bp.route("/products/runids/analyze_runid_tests", methods=['POST', "GET"])
+def analyze_runid_tests():
+    if request.method == "POST":
+        row_information = json.dumps(request.json)
+        row_json = json.loads(row_information)
+
+        response = requests.get("http://127.0.0.1:5002/api/overview_pipeline")
+        testname = row_json.get("test")
+        print(testname)
+        excel_file = r"C:\Users\monke\Downloads\test (30).xlsx"
+        # Path to the existing Excel file
+        '''
+        file_path = excel_file
+
+        filename = os.path.basename(file_path)
+
+        # Create a response with the file content
+        response = make_response(open(file_path, 'rb').read())
+
+        # Set the appropriate content type and headers for file download
+        response.headers.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response.headers.set('Content-Disposition', 'attachment', filename=filename)
+        '''
+        report_data = response.content
+        report_filename = 'report.xlsx'  # Specify the desired filename
+        flask_response = make_response(report_data)
+        flask_response.headers.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        flask_response.headers.set('Content-Disposition', 'attachment', filename=report_filename)
+        print("sending response")
+        return flask_response
+
+        # return send_file(excel_file, as_attachment=True, attachment_filename='test.xlsx')
